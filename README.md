@@ -12,7 +12,7 @@ These are various scripts I use to manage the server.
   - [📌 What it does](#-what-it-does)
   - [✅ Requirements](#-requirements-1)
   - [🛠️ Setup](#️-setup)
-- [▶️ Usage](#️-usage)
+  - [Usage](#️-usage)
   - [Useful flags](#useful-flags)
   - [🧮 Log output](#-log-output)
   - [🎯 Cron example](#-cron-example)
@@ -133,7 +133,7 @@ echo "https://discord.com/api/webhooks/..." > ~/discord-webhook-url.txt
 chmod +x ./scripts/proteus-health-monitor.py
 ```
 
-## ▶️ Usage
+### Usage
 
 ```sh
 python3 ./scripts/proteus-health-monitor.py --dry-run
