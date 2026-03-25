@@ -3,26 +3,25 @@
 These are various scripts I use to manage the server.
 
 - [banned-ip-geostat (Python script)](#banned-ip-geostat-python-script)
-  - [How it works](#how-it-works)
-  - [Requirements](#requirements)
-  - [Configuration](#configuration)
-  - [Examples](#examples)
-  - [Output Sample](#output-sample)
+  - [📌 How it works](#-how-it-works)
+  - [✅ Requirements](#-requirements)
+  - [🛠️ Configuration](#️-configuration)
+  - [🌏️ Examples](#️-examples)
+  - [🌏️ Output Sample](#️-output-sample)
 - [Health Report Monitor Script](#health-report-monitor-script)
-- [📌 What it does](#-what-it-does)
-- [✅ Requirements](#-requirements)
-- [🛠️ Setup](#️-setup)
+  - [📌 What it does](#-what-it-does)
+  - [✅ Requirements](#-requirements-1)
+  - [🛠️ Setup](#️-setup)
 - [▶️ Usage](#️-usage)
   - [Useful flags](#useful-flags)
-- [🧮 Log output](#-log-output)
-- [🎯 Cron example](#-cron-example)
-
+  - [🧮 Log output](#-log-output)
+  - [🎯 Cron example](#-cron-example)
 
 ## banned-ip-geostat (Python script)
 
 Fetches geolocation data for banned IPs and reports statistics by country, organisation, and city using the [IPInfo](https://ipinfo.io) API.
 
-### How it works
+### 📌 How it works
 
 1. Runs `~/scripts/check-banned-ips.sh` to retrieve currently jailed IPs from fail2ban
 2. Merges them with any previously seen IPs in `ip_list.txt`, deduplicates, and sorts the list
@@ -43,13 +42,13 @@ The raw per-IP values are also written to the output files for further processin
 | `--org-ips-file`     | `org_ips.txt`        | Output file listing IPs grouped by organisation                    |
 | `--api-key`          | _(env)_              | IPInfo API key; overrides `IPINFO_API_KEY`                         |
 
-### Requirements
+### ✅ Requirements
 
 - Python 3.12+
 - An [IPInfo API key](https://ipinfo.io/signup)
 - `~/scripts/check-banned-ips.sh` present and executable (unless using `--no-banned-script`)
 
-### Configuration
+### 🛠️ Configuration
 
 Create a `.env` file in the working directory:
 
@@ -59,7 +58,7 @@ IPINFO_API_KEY=your_api_key_here
 
 Alternatively, pass --api-key on the command line.
 
-### Examples
+### 🌏️ Examples
 
 ```sh
 # Standard run — fetch new banned IPs and look them up
@@ -72,7 +71,7 @@ python banned-ip-geostat.py --api-key sk_abc123
 python banned-ip-geostat.py --no-banned-script --ip-file my_ips.txt
 ```
 
-### Output Sample
+### 🌏️ Output Sample
 
 ```sh
 Statistics by country code:
@@ -98,7 +97,7 @@ Statistics by city:
 A small Python script that runs periodic system health checks (disk usage, service status, DNS resolution, and network bandwidth) and sends a formatted report to a Discord webhook.
 
 
-## 📌 What it does
+### 📌 What it does
 
 - Checks large directories (`/var/log`, `/var/cache`, `/tmp`) and warns if files exceed a threshold.
 - Checks disk usage on `/dev/vda1` against a percentage threshold.
@@ -107,14 +106,14 @@ A small Python script that runs periodic system health checks (disk usage, servi
 - Fetches concise **monthly + daily** bandwidth stats per interface from `vnstat`.
 - Sends a single Discord message with the results and writes a timestamped report file to `/var/log/proteus-health-reports/`.
 
-## ✅ Requirements
+### ✅ Requirements
 
 - Python 3
 - `requests` Python package
 - `vnstat` (v2.x) installed and configured
 - `dig` (from `dnsutils`/`bind9-dnsutils`)
 
-## 🛠️ Setup
+### 🛠️ Setup
 
 1. Place the script somewhere, e.g.:
 
@@ -149,14 +148,13 @@ python3 ./scripts/proteus-health-monitor.py --dry-run
 - `--disk-threshold <percent>` – disk usage percent threshold (default `50`)
 - `--services <list>` – space-separated list of services to check
 
-
-## 🧮 Log output
+### 🧮 Log output
 
 Reports are saved under `/var/log/proteus-health-report.<timestamp>.log`.
 
 The script includes a sample `logrotate` config block (commented at the top of the script) to avoid disk pollution.
 
-## 🎯 Cron example
+### 🎯 Cron example
 
 Add a cron job to run once per day (at 06:00am AEDT or 7pm UTC) with `crontab -e`:
 

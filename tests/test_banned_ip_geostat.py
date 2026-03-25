@@ -188,3 +188,187 @@ def test_fetch_banned_ips_missing_script_exits(monkeypatch, tmp_path):
     with pytest.raises(SystemExit) as e:
         B.fetch_banned_ips()
     assert e.value.code == 1
+
+
+def test_load_env_returns_without_file(monkeypatch, tmp_path):
+    # Ensure an env var doesn't get created implicitly.
+    monkeypatch.setenv("IPINFO_API_KEY", "existing")
+    missing = tmp_path / "does-not-exist.env"
+
+    B.load_env(str(missing))
+    assert os.environ.get("IPINFO_API_KEY") == "existing"
+
+
+def test_fetch_banned_ips_exits_on_subprocess_error(monkeypatch, tmp_path):
+    fake_script = tmp_path / "check-banned-ips.sh"
+    fake_script.write_text("#!/bin/bash\n", encoding="utf-8")
+    monkeypatch.setattr(B, "BANNED_IPS_SCRIPT", fake_script)
+
+    def fake_run(_args, capture_output=True, text=True):
+        return SimpleNamespace(returncode=1, stdout="", stderr="boom")
+
+    monkeypatch.setattr(B.subprocess, "run", fake_run)
+
+    with pytest.raises(SystemExit) as e:
+        B.fetch_banned_ips()
+    assert e.value.code == 1
+
+
+def test_print_stats_outputs_expected_lines(capsys):
+    from collections import Counter
+
+    counter = Counter({"US": 2, "CA": 1})
+    B.print_stats("country code", counter)
+
+    out = capsys.readouterr().out
+    assert "Statistics by country code:" in out
+    assert "     2  US" in out
+    assert "     1  CA" in out
+
+
+def test_print_org_ips_outputs_expected_lines(capsys):
+    org_ips = {"OrgB": ["2.2.2.2"], "OrgA": ["1.1.1.1", "3.3.3.3"]}
+    B.print_org_ips(org_ips)
+
+    out = capsys.readouterr().out
+    assert "IPs by organisation:" in out
+    assert "  OrgA" in out
+    assert "    1.1.1.1" in out
+    assert "    3.3.3.3" in out
+
+
+def test_main_happy_path_writes_outputs_and_prints(monkeypatch, tmp_path, capsys):
+    ip_file = tmp_path / "ip_list.txt"
+    ip_file.write_text("1.2.3.4\n5.6.7.8\n", encoding="utf-8")
+
+    country_file = tmp_path / "country_count.txt"
+    org_file = tmp_path / "org_count.txt"
+    city_file = tmp_path / "city_count.txt"
+    org_ips_file = tmp_path / "org_ips.txt"
+
+    args = SimpleNamespace(
+        ip_file=str(ip_file),
+        no_banned_script=True,
+        env_file=str(tmp_path / ".env"),
+        country_file=str(country_file),
+        org_file=str(org_file),
+        city_file=str(city_file),
+        org_ips_file=str(org_ips_file),
+        api_key="tok",
+    )
+
+    import urllib.error
+
+    monkeypatch.setattr(B, "parse_args", lambda: args)
+    monkeypatch.setattr(B, "load_env", lambda _path: None)
+    monkeypatch.setattr(B, "preflight", lambda _api_key: None)
+
+    def fake_get_ip_info(ip: str, api_key: str):
+        if ip == "1.2.3.4":
+            return {"country": "US", "org": "OrgX", "city": "NYC"}
+        raise urllib.error.URLError("no-ip-info")
+
+    monkeypatch.setattr(B, "get_ip_info", fake_get_ip_info)
+
+    # Let print_stats/print_org_ips run (to improve coverage there too).
+    B.main()
+
+    assert country_file.read_text(encoding="utf-8") == "US\n"
+    assert org_file.read_text(encoding="utf-8") == "OrgX\n"
+    assert city_file.read_text(encoding="utf-8") == "NYC\n"
+
+    # write_org_ips writes an Org header and the sorted IPs under it.
+    assert org_ips_file.read_text(encoding="utf-8") == "\n".join(
+        ["OrgX", "  1.2.3.4", ""]
+    )
+
+    stdout = capsys.readouterr().out
+    assert "Processing 1.2.3.4..." in stdout
+    assert "Warning: failed to get info for 5.6.7.8" in stdout
+
+
+def test_main_exits_when_api_key_missing(monkeypatch, tmp_path):
+    import sys
+    import urllib.error
+
+    args = SimpleNamespace(
+        ip_file=str(tmp_path / "ip_list.txt"),
+        no_banned_script=True,
+        env_file=str(tmp_path / ".env"),
+        country_file=str(tmp_path / "country.txt"),
+        org_file=str(tmp_path / "org.txt"),
+        city_file=str(tmp_path / "city.txt"),
+        org_ips_file=str(tmp_path / "org_ips.txt"),
+        api_key=None,
+    )
+
+    monkeypatch.setattr(B, "parse_args", lambda: args)
+    monkeypatch.setattr(B, "load_env", lambda _p: None)
+    monkeypatch.delenv("IPINFO_API_KEY", raising=False)
+
+    with pytest.raises(SystemExit) as e:
+        B.main()
+    assert e.value.code == 1
+
+
+def test_main_calls_banned_ip_script_when_no_banned_script_false(monkeypatch, tmp_path, capsys):
+    # Exercise the `not args.no_banned_script` branch.
+    ip_file = tmp_path / "ip_list.txt"
+    country_file = tmp_path / "country_count.txt"
+    org_file = tmp_path / "org_count.txt"
+    city_file = tmp_path / "city_count.txt"
+    org_ips_file = tmp_path / "org_ips.txt"
+
+    args = SimpleNamespace(
+        ip_file=str(ip_file),
+        no_banned_script=False,
+        env_file=str(tmp_path / ".env"),
+        country_file=str(country_file),
+        org_file=str(org_file),
+        city_file=str(city_file),
+        org_ips_file=str(org_ips_file),
+        api_key="tok",
+    )
+
+    monkeypatch.setattr(B, "parse_args", lambda: args)
+    monkeypatch.setattr(B, "load_env", lambda _p: None)
+    monkeypatch.setattr(B, "preflight", lambda _api_key: None)
+    monkeypatch.setattr(B, "fetch_banned_ips", lambda: ["1.2.3.4"])
+
+    # Avoid network: return deterministic info.
+    monkeypatch.setattr(
+        B,
+        "get_ip_info",
+        lambda ip, api_key: {"country": "US", "org": "OrgX", "city": "NYC"},
+    )
+
+    # Let merge_ips actually write into ip_file so file creation covers that code.
+    B.main()
+
+    assert ip_file.exists()
+    assert country_file.read_text(encoding="utf-8") == "US\n"
+    assert org_file.read_text(encoding="utf-8") == "OrgX\n"
+    assert city_file.read_text(encoding="utf-8") == "NYC\n"
+
+
+def test_main_exits_when_no_banned_script_and_ip_file_missing(monkeypatch, tmp_path):
+    ip_file = tmp_path / "missing_ip_list.txt"  # intentionally does not exist
+
+    args = SimpleNamespace(
+        ip_file=str(ip_file),
+        no_banned_script=True,
+        env_file=str(tmp_path / ".env"),
+        country_file=str(tmp_path / "country.txt"),
+        org_file=str(tmp_path / "org.txt"),
+        city_file=str(tmp_path / "city.txt"),
+        org_ips_file=str(tmp_path / "org_ips.txt"),
+        api_key="tok",
+    )
+
+    monkeypatch.setattr(B, "parse_args", lambda: args)
+    monkeypatch.setattr(B, "load_env", lambda _p: None)
+
+    with pytest.raises(SystemExit) as e:
+        B.main()
+    assert e.value.code == 1
+
