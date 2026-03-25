@@ -158,8 +158,8 @@ The script includes a sample `logrotate` config block (commented at the top of t
 
 ## 🎯 Cron example
 
-Add a cron job to run once per day (at 06:00) with `crontab -e`:
+Add a cron job to run once per day (at 06:00am AEDT or 7pm UTC) with `crontab -e`:
 
 ```cron
-0 6 * * * /usr/bin/python3 /root/scripts/proteus-health-monitor.py --webhook-file /root/discord-webhook-url.txt
+0 19 * * * /usr/bin/python3 /root/scripts/proteus-health-monitor.py --webhook-file /root/discord-webhook-url.txt
 ```
