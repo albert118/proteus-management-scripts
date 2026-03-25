@@ -138,6 +138,12 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.venv*/
+# Some setups name the virtualenv directory differently
+virtualenv/
+virtualenvs/
+.virtualenv/
+bin/
 env/
 venv/
 ENV/

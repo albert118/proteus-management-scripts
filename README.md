@@ -105,7 +105,7 @@ A small Python script that runs periodic system health checks (disk usage, servi
 - Verifies that key services (nginx, ssh, fail2ban, wg-quick@wg0, ufw) are active.
 - Verifies DNS resolution for `google.com` using `dig`.
 - Fetches concise **monthly + daily** bandwidth stats per interface from `vnstat`.
-- Sends a single Discord message with the results and writes a timestamped report file to `/var/log`.
+- Sends a single Discord message with the results and writes a timestamped report file to `/var/log/proteus-health-reports/`.
 
 ## ✅ Requirements
 
@@ -161,5 +161,6 @@ The script includes a sample `logrotate` config block (commented at the top of t
 Add a cron job to run once per day (at 06:00am AEDT or 7pm UTC) with `crontab -e`:
 
 ```cron
-0 19 * * * /usr/bin/python3 /root/scripts/proteus-health-monitor.py --webhook-file /root/discord-webhook-url.txt
+# change the directories as needed
+0 19 * * * /usr/bin/python3 ~/proteus-health-monitor.py --webhook-file ~/discord-webhook-url.txt
 ```
