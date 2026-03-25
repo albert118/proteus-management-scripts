@@ -5,6 +5,7 @@ from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 import pytest
+import runpy
 
 
 def load_module():
@@ -46,4 +47,21 @@ def test_filter_ips_writes_distinct_sorted_ips(tmp_path, monkeypatch):
     F.main()
 
     assert out.read_text(encoding="utf-8") == "1.1.1.1\n2.2.2.2\n3.3.3.3\n4.4.4.4\n"
+
+
+def test_filter_ips_entrypoint_writes_output(tmp_path, monkeypatch):
+    # Execute the script as if run from the command line to cover the __main__ guard.
+    out = tmp_path / "ip_list.txt"
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        __import__("sys"),
+        "argv",
+        ["filter-ips.py", "2.2.2.2", "1.1.1.1", "-o", str(out)],
+        raising=True,
+    )
+
+    repo_root = Path(__file__).resolve().parents[1]
+    runpy.run_path(str(repo_root / "filter-ips.py"), run_name="__main__")
+
+    assert out.read_text(encoding="utf-8") == "1.1.1.1\n2.2.2.2\n"
 
