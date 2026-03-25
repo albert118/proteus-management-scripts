@@ -67,7 +67,7 @@ def check_directory_size(path, threshold):
 
 def check_disk_usage(threshold):
     # /dev/vda1 is the primary disk on this machine
-    command = f"df -hlP /dev/vda1 | awk '$5 > {threshold}'"
+    command = f"df -hlP /dev/vda1 | awk -v thr=\"{threshold}\" 'NR==1 {{ print; next }} {{ sub(/%/, \"\", $5); if ($5+0 > thr+0) print }}'"
 
     result = subprocess.run(
         command,

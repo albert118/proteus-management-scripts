@@ -38,6 +38,8 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+.junit/
+junit/
 .tox/
 .nox/
 .coverage
@@ -138,6 +140,12 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.venv*/
+# Some setups name the virtualenv directory differently
+virtualenv/
+virtualenvs/
+.virtualenv/
+bin/
 env/
 venv/
 ENV/

@@ -1,0 +1,48 @@
+# Run the tests
+# ----------------------------------
+name: Run all tests
+
+on:
+    pull_request:
+        branches: 
+          - "main"
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            python-version: [ "3.10", "3.11", "3.12"]
+
+        steps:
+            - uses: actions/checkout@v5
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v5
+              with:
+                python-version: ${{ matrix.python-version }}
+                cache: "pip"
+                cache-dependency-path: |
+                  requirements-dev.txt
+                  pyproject.toml
+            - name: Install dependencies
+              run: |
+                python -c "import sys; print(sys.version)"
+                python -m pip install --upgrade pip
+                pip install -r requirements-dev.txt
+            - name: Run tests (Pytest)
+              run: |
+                mkdir -p junit
+                coverage run --source=. -m pytest --junitxml=junit/test-results.xml
+                coverage report -m
+                coverage xml -o coverage.xml
+                coverage html
+            - name: Surface failing pytest tests
+              if: always()
+              uses: pmeier/pytest-results-action@v0.8.0
+              with:
+                path: junit/test-results.xml
+                summary: true
+                display-options: fEX
+                fail-on-empty: false
+                title: Test results
