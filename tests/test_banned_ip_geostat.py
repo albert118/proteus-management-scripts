@@ -7,6 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 import os
+import runpy
+import sys
 
 
 def load_module():
@@ -371,4 +373,59 @@ def test_main_exits_when_no_banned_script_and_ip_file_missing(monkeypatch, tmp_p
     with pytest.raises(SystemExit) as e:
         B.main()
     assert e.value.code == 1
+
+
+def test_banned_ip_geostat_entrypoint_runs_main(monkeypatch, tmp_path):
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = repo_root / "banned-ip-geostat.py"
+
+    ip_file = tmp_path / "ip_list.txt"
+    ip_file.write_text("1.2.3.4\n", encoding="utf-8")
+
+    country_file = tmp_path / "country_count.txt"
+    org_file = tmp_path / "org_count.txt"
+    city_file = tmp_path / "city_count.txt"
+    org_ips_file = tmp_path / "org_ips.txt"
+
+    def fake_urlopen(req):
+        url = req.full_url
+        if "lite/8.8.8.8" in url:
+            return FakeResponse(b"ok")
+        if "ipinfo.io/1.2.3.4" in url:
+            return FakeResponse(
+                b'{"country":"US","org":"OrgA","city":"NYC"}'
+            )
+        return FakeResponse(b"{}")
+
+    monkeypatch.setattr(B.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "banned-ip-geostat.py",
+            "--no-banned-script",
+            "--ip-file",
+            str(ip_file),
+            "--api-key",
+            "tok",
+            "--env-file",
+            str(tmp_path / ".env"),
+            "--country-file",
+            str(country_file),
+            "--org-file",
+            str(org_file),
+            "--city-file",
+            str(city_file),
+            "--org-ips-file",
+            str(org_ips_file),
+        ],
+        raising=True,
+    )
+
+    runpy.run_path(str(script_path), run_name="__main__")
+
+    assert country_file.read_text(encoding="utf-8") == "US\n"
+    assert org_file.read_text(encoding="utf-8") == "OrgA\n"
+    assert city_file.read_text(encoding="utf-8") == "NYC\n"
+    assert "OrgA" in org_ips_file.read_text(encoding="utf-8")
 

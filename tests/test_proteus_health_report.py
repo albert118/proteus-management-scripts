@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import runpy
 
 
 def load_module():
@@ -395,3 +396,151 @@ def test_main_test_webhook_sends_test_and_returns(monkeypatch, tmp_path):
 
     assert called["webhook"] == "http://hook.example"
     assert "Proteus Discord webhook is working" in called["message"]
+
+
+def test_check_directory_size_returns_stdout_lines_on_success(monkeypatch):
+    def fake_run(*_args, **_kwargs):
+        return SimpleNamespace(
+            returncode=0, stderr="", stdout="a\nb\n"
+        )
+
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT.subprocess, "run", fake_run)
+    assert PROTEUS_HEALTH_REPORT.check_directory_size("/tmp/*", "20M") == [
+        "a",
+        "b",
+    ]
+
+
+def test_check_disk_usage_returns_stdout_lines_on_success(monkeypatch):
+    def fake_run(*_args, **_kwargs):
+        return SimpleNamespace(
+            returncode=0, stderr="", stdout="row1\nrow2\n"
+        )
+
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT.subprocess, "run", fake_run)
+    assert PROTEUS_HEALTH_REPORT.check_disk_usage("50") == ["row1", "row2"]
+
+
+def test_main_test_webhook_exits_when_webhook_missing(tmp_path, monkeypatch):
+    # Let get_discord_webhook hit the FileNotFoundError path.
+    missing = tmp_path / "does-not-exist.txt"
+
+    import sys
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "proteus-health-report.py",
+            "--test-webhook",
+            "--webhook-file",
+            str(missing),
+        ],
+        raising=True,
+    )
+
+    with pytest.raises(SystemExit) as e:
+        PROTEUS_HEALTH_REPORT.main()
+    assert e.value.code == 1
+
+
+def test_main_exits_when_webhook_file_empty_and_not_dry_run(monkeypatch):
+    import sys
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["proteus-health-report.py", "--webhook-file", ""],
+        raising=True,
+    )
+
+    with pytest.raises(SystemExit) as e:
+        PROTEUS_HEALTH_REPORT.main()
+    assert e.value.code == 1
+
+
+def test_main_exits_when_webhook_url_missing_and_not_dry_run(tmp_path, monkeypatch):
+    import sys
+
+    missing = tmp_path / "discord-webhook-url.txt"
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["proteus-health-report.py", "--webhook-file", str(missing)],
+        raising=True,
+    )
+
+    with pytest.raises(SystemExit) as e:
+        PROTEUS_HEALTH_REPORT.main()
+    assert e.value.code == 1
+
+
+def test_proteus_health_report_entrypoint_runs_main(monkeypatch, tmp_path):
+    import builtins
+    import subprocess as sp
+    import sys
+
+    repo_root = Path(__file__).resolve().parents[1]
+    script_path = repo_root / "proteus-health-report.py"
+
+    report_path = tmp_path / "proteus-health-report.log"
+    real_open = builtins.open
+
+    def fake_open(file, mode="r", *args, **kwargs):
+        if str(file).startswith("/var/log/proteus-health-reports/report.log"):
+            return real_open(report_path, mode, *args, **kwargs)
+        return real_open(file, mode, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "open", fake_open)
+
+    def fake_run(command, capture_output=True, text=True, shell=True, check=False):
+        cmd = command if isinstance(command, str) else str(command)
+
+        if cmd.startswith("du -sh -t"):
+            return SimpleNamespace(returncode=0, stdout="warn1\nwarn2\n", stderr="")
+        if cmd.startswith("df -hlP /dev/vda1"):
+            return SimpleNamespace(
+                returncode=0,
+                stdout="Filesystem\n/dev/vda1 10G 9G 55% / \n",
+                stderr="",
+            )
+        if cmd.startswith("systemctl -q is-active"):
+            # Always mark services active.
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+        if cmd.startswith("dig +short google.com"):
+            return SimpleNamespace(returncode=0, stdout="8.8.8.8\n", stderr="")
+        if cmd.startswith("vnstat -i"):
+            return SimpleNamespace(
+                returncode=0,
+                stdout=(
+                    "eth0 (monthly): rx 1, tx 2, total 3\n"
+                    "eth0 (daily): rx 4, tx 5, total 6\n"
+                ),
+                stderr="",
+            )
+
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(sp, "run", fake_run)
+
+    webhook_file = tmp_path / "webhook.txt"
+    webhook_file.write_text("http://hook.example", encoding="utf-8")
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "proteus-health-report.py",
+            "--dry-run",
+            "--webhook-file",
+            str(webhook_file),
+        ],
+        raising=True,
+    )
+
+    runpy.run_path(str(script_path), run_name="__main__")
+
+    assert report_path.exists()
+    content = report_path.read_text(encoding="utf-8")
+    assert "Proteus Health Report" in content
