@@ -2,7 +2,7 @@
 """Health monitoring script that triggers a health report Discord notification."""
 
 # Ensure logrotate is configured to avoid polluting the disk
-# /var/log/proteus-health-reports/report.log {
+# /var/log/ganymede-health-reports/report.log {
 #     weekly
 #     rotate 1
 #     compress
@@ -133,29 +133,52 @@ def check_network_stats():
             shell=True
         )
         if result.returncode == 0 and result.stdout.strip():
-            lines = [line.rstrip() for line in result.stdout.splitlines() if line.strip()]
+            lines = [line.rstrip()
+                     for line in result.stdout.splitlines() if line.strip()]
             all_lines.extend(lines)
     if not all_lines:
         return ["Network stats unavailable (vnstat failed or not installed)"]
     return all_lines
 
 
+def check_active_docker_containers():
+    """Get list of active running docker containers in table format."""
+    command = "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        shell=True
+    )
+
+    if result.returncode != 0:
+        return ["Docker unavailable or no containers running"]
+
+    lines = [line.rstrip()
+             for line in result.stdout.splitlines() if line.strip()]
+    
+    if not lines or (len(lines) == 1 and "NAMES" in lines[0]):
+        return ["No active docker containers"]
+    
+    return lines
+
+
 def save_report_to_disk(report_content):
     """Write the report to a new log file (rotation is handled externally, e.g., logrotate)."""
-    report_file = Path("/var/log/proteus-health-reports/report.log")
+    report_file = Path("/var/log/health-reports/report.log")
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     with open(report_file, "w") as f:
         f.write(f"[{timestamp}]\n{report_content}\n")
 
 
-def send_monitor_report(logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, dry_run=False, webhook_file='discord-webhook-url.txt'):
+def send_monitor_report(logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, docker_containers, dry_run=False, webhook_file='discord-webhook-url.txt'):
     """Compile system monitor report and send to Discord webhook."""
 
     webhook_url = get_discord_webhook(webhook_file)
     if not webhook_url and not dry_run:
         return
 
-    report_sections = ["**Proteus Health Report**"]
+    report_sections = ["**Ganymede Health Report**"]
 
     if logs_warnings:
         logs_formatted = "\n".join(f"  • {entry}" for entry in logs_warnings)
@@ -188,11 +211,18 @@ def send_monitor_report(logs_warnings, caches_warnings, tmps_warnings, disk_warn
         dns_formatted = "\n".join(f"  • {status}" for status in dns_status)
         report_sections.append(f"**🌐 DNS Resolution:**\n{dns_formatted}")
 
+    # Add docker containers section
+    if docker_containers:
+        containers_formatted = "\n".join(docker_containers)
+        report_sections.append(
+            f"**🐳 Active Docker Containers:**\n```\n{containers_formatted}\n```")
+
     # Add network stats section
-    if net_stats:
-        if isinstance(net_stats, list):
-            net_stats = "\n".join(net_stats)
-        report_sections.append(f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
+    # if net_stats:
+    #     if isinstance(net_stats, list):
+    #         net_stats = "\n".join(net_stats)
+    #     report_sections.append(
+    #         f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
 
     report_message = "\n\n".join(report_sections)
 
@@ -226,7 +256,7 @@ def setup_argument_parser():
                         help='File size threshold for warnings (default: 20M)')
     parser.add_argument('--disk-threshold', default='50',
                         help='Disk usage percentage threshold for warnings (default: 50)')
-    parser.add_argument('--services', nargs='+', default=['nginx', 'ssh', 'fail2ban', 'wg-quick@wg0', 'ufw', 'crontab-guru-dashboard'],
+    parser.add_argument('--services', nargs='+', default=['ssh', 'ufw', 'crontab-guru-dashboard', 'docker'],
                         help='Services to monitor (default: nginx ssh fail2ban wg-quick@wg0 ufw crontab-guru-dashboard)')
     parser.add_argument('--test-webhook', action='store_true',
                         help='Send a test notification to the Discord webhook and exit')
@@ -274,8 +304,11 @@ def main() -> None:
     # check DNS resolution
     dns_status = check_dns_resolution()
 
+    # check active docker containers
+    docker_containers = check_active_docker_containers()
+
     # check network stats
-    net_stats = check_network_stats()
+    # net_stats = check_network_stats()
 
     # Send disk usage report to Discord
     report_message = send_monitor_report(
@@ -285,7 +318,7 @@ def main() -> None:
         disk_usage_warning,
         service_statuses,
         dns_status,
-        net_stats,
+        docker_containers,
         dry_run=args.dry_run,
         webhook_file=args.webhook_file
     )
