@@ -1,0 +1,100 @@
+# Proteus Health Report Configuration
+# 
+# This file allows per-host configuration of the health report script.
+# Customize report sections, thresholds, paths, and services to monitor.
+# All configuration is in this file - use --config to specify alternate location.
+
+# Sets the name of the host, used for the report title
+hostname: '<please set the hostname in the config>'
+
+# Report Sections
+# Enable or disable specific report sections
+sections:
+  # Directory size warnings for logs directories
+  logs_warnings: true
+  
+  # Directory size warnings for cache directories
+  caches_warnings: true
+  
+  # Directory size warnings for temporary directories
+  temp_warnings: true
+  
+  # Overall disk usage warning
+  disk_warnings: true
+  
+  # Systemctl service status checks
+  service_statuses: true
+  
+  # DNS resolution test
+  dns_resolution: true
+  
+  # Network statistics with vnstat
+  net_stats: true
+
+  # Docker container status
+  docker_containers: true
+
+# Network interfaces to consider for the health report. 
+# These must be provided to populate data within the net_stats report section
+network_interfaces:
+  - 'wg0'
+  - 'eth0'
+
+# Thresholds & Limits
+thresholds:
+  # Disk usage percentage threshold (0-100)
+  # Report if disk usage exceeds this percentage
+  disk_percent: 50
+  
+  # File/directory size threshold for warnings
+  # Format: number with unit (K, M, G)
+  # Report directories larger than this size
+  file_size: "20M"
+
+# Paths & Locations
+paths:
+  # Disk device to monitor
+  disk_device: "/dev/vda1"
+  
+  # Directories to check for logs size warnings
+  logs_directories:
+    - "/var/log/*"
+  
+  # Directories to check for cache size warnings
+  cache_directories:
+    - "/var/cache/*"
+  
+  # Directories to check for temp size warnings
+  temp_directories:
+    - "/tmp/*"
+  
+  # Network interfaces to monitor with vnstat
+  network_interfaces:
+    - "wg0"
+    - "eth0"
+  
+  # File where Discord webhook URL is stored
+  webhook_file: "discord-webhook-url.txt"
+  
+  # Location to save report log file
+  # Note: ensure the directory exists and is writable
+  report_file_location: "/var/log/health-reports/report.log"
+
+# Services & Monitoring
+services:
+  # List of systemd services to monitor
+  # Health report will show status (active/inactive) for each
+  to_monitor:
+    - "ssh"
+    - "ufw"
+    - "crontab-guru-dashboard"
+    - "docker"
+    - "nginx"
+    - "fail2ban"
+    - "wg-quick@wg0"
+
+# DNS Testing
+dns:
+  # Domain to test for DNS resolution
+  test_domain: "google.com"
+
