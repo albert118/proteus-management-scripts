@@ -337,7 +337,7 @@ def main() -> None:
     logs_size_warnings = []
     if config['sections']['logs_warnings']:
         logs_size_warnings = check_directory_size(
-            config['paths']['directories_to_check'],
+            config['paths']['logs_directories'],
             config['thresholds']['file_size'])
 
     caches_size_warnings = []
@@ -345,13 +345,13 @@ def main() -> None:
         # For now, caches_warnings uses the same directories from config
         # In future, could separate cache-specific directories
         caches_size_warnings = check_directory_size(
-            [d for d in config['paths']['directories_to_check'] if 'cache' in d],
+            [d for d in config['paths']['cache_directories'] if 'cache' in d],
             config['thresholds']['file_size'])
 
     tmps_size_warnings = []
     if config['sections']['temp_warnings']:
         tmps_size_warnings = check_directory_size(
-            [d for d in config['paths']['directories_to_check'] if 'tmp' in d],
+            [d for d in config['paths']['temp_directories'] if 'tmp' in d],
             config['thresholds']['file_size'])
 
     disk_usage_warning = []

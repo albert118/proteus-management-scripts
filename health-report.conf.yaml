@@ -5,7 +5,7 @@
 # All configuration is in this file - use --config to specify alternate location.
 
 # Sets the name of the host, used for the report title
-hostname: '<please set the hostname in the config>'
+hostname: 'Ganymede'
 
 # Report Sections
 # Enable or disable specific report sections
@@ -29,7 +29,7 @@ sections:
   dns_resolution: true
   
   # Network statistics with vnstat
-  net_stats: true
+  net_stats: false
 
   # Docker container status
   docker_containers: true
@@ -37,7 +37,6 @@ sections:
 # Network interfaces to consider for the health report. 
 # These must be provided to populate data within the net_stats report section
 network_interfaces:
-  - 'wg0'
   - 'eth0'
 
 # Thresholds & Limits
@@ -68,13 +67,8 @@ paths:
   temp_directories:
     - "/tmp/*"
   
-  # Network interfaces to monitor with vnstat
-  network_interfaces:
-    - "wg0"
-    - "eth0"
-  
   # File where Discord webhook URL is stored
-  webhook_file: "discord-webhook-url.txt"
+  webhook_file: "/home/albertferguson/tokens/discord-webhook-url.txt"
   
   # Location to save report log file
   # Note: ensure the directory exists and is writable
@@ -89,9 +83,6 @@ services:
     - "ufw"
     - "crontab-guru-dashboard"
     - "docker"
-    - "nginx"
-    - "fail2ban"
-    - "wg-quick@wg0"
 
 # DNS Testing
 dns:
