@@ -160,21 +160,34 @@ def test_check_network_stats_fallback_when_failed(monkeypatch):
 
 
 def test_check_network_stats_parses_lines(monkeypatch):
-    stdout = "\n".join(
+    wg0_stdout = "\n".join(
         [
-            "eth0 (monthly): rx 1, tx 2, total 3",
+            "wg0 (monthly): rx 1, tx 2, total 3",
             "",
-            "eth0 (daily): rx 4, tx 5, total 6",
+            "wg0 (daily): rx 4, tx 5, total 6",
+        ]
+    )
+    eth0_stdout = "\n".join(
+        [
+            "eth0 (monthly): rx 10, tx 20, total 30",
+            "",
+            "eth0 (daily): rx 40, tx 50, total 60",
         ]
     )
 
     def fake_run(command, capture_output=True, text=True, shell=True):
-        return SimpleNamespace(returncode=0, stdout=stdout)
+        if "wg0" in command:
+            return SimpleNamespace(returncode=0, stdout=wg0_stdout)
+        elif "eth0" in command:
+            return SimpleNamespace(returncode=0, stdout=eth0_stdout)
+        return SimpleNamespace(returncode=1, stdout="")
 
     monkeypatch.setattr(PROTEUS_HEALTH_REPORT.subprocess, "run", fake_run)
     assert PROTEUS_HEALTH_REPORT.check_network_stats() == [
-        "eth0 (monthly): rx 1, tx 2, total 3",
-        "eth0 (daily): rx 4, tx 5, total 6",
+        "wg0 (monthly): rx 1, tx 2, total 3",
+        "wg0 (daily): rx 4, tx 5, total 6",
+        "eth0 (monthly): rx 10, tx 20, total 30",
+        "eth0 (daily): rx 40, tx 50, total 60",
     ]
 
 

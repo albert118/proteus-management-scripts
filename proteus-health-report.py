@@ -121,39 +121,23 @@ def check_dns_resolution():
 
 
 def check_network_stats():
-    """Run vnstat for chosen interfaces and return a concise monthly/daily summary."""
-    # Use awk to extract just the monthly and daily bandwidth lines.
-    command = r"""vnstat -i eth0 wg0 2>/dev/null | awk -F'|' '
-/ since / { iface=$1; gsub(/^ +| +$/,"",iface); split(iface,a," "); iface=a[1]; next }
-/^ *20[0-9][0-9]-/ {
-  line=$0; gsub(/^ +| +$/,"",line);
-  split(line,parts,"|");
-  n=split(parts[1],a," "); rx=a[n];
-  gsub(/^ +| +$/,"",parts[2]); tx=parts[2];
-  gsub(/^ +| +$/,"",parts[3]); total=parts[3];
-  print iface " (monthly): rx " rx ", tx " tx ", total " total;
-}
-/^ *today/ {
-  line=$0; gsub(/^ +| +$/,"",line);
-  split(line,parts,"|");
-  n=split(parts[1],a," "); rx=a[n];
-  gsub(/^ +| +$/,"",parts[2]); tx=parts[2];
-  gsub(/^ +| +$/,"",parts[3]); total=parts[3];
-  print iface " (daily): rx " rx ", tx " tx ", total " total;
-}
-'"""
-
-    result = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        shell=True
-    )
-
-    if result.returncode != 0 or not result.stdout.strip():
+    """Run vnstat for chosen interfaces and return ASCII-formatted stats lines."""
+    interfaces = ['wg0', 'eth0']
+    all_lines = []
+    for iface in interfaces:
+        command = f"vnstat -i {iface} -d | head -8"
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            shell=True
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            lines = [line.rstrip() for line in result.stdout.splitlines() if line.strip()]
+            all_lines.extend(lines)
+    if not all_lines:
         return ["Network stats unavailable (vnstat failed or not installed)"]
-
-    return [line for line in result.stdout.splitlines() if line.strip()]
+    return all_lines
 
 
 def save_report_to_disk(report_content):
@@ -206,9 +190,9 @@ def send_monitor_report(logs_warnings, caches_warnings, tmps_warnings, disk_warn
 
     # Add network stats section
     if net_stats:
-        net_formatted = "\n".join(f"  • {line}" for line in net_stats)
-        report_sections.append(
-            f"**📶 Network Stats (vnstat):**\n{net_formatted}")
+        if isinstance(net_stats, list):
+            net_stats = "\n".join(net_stats)
+        report_sections.append(f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
 
     report_message = "\n\n".join(report_sections)
 
