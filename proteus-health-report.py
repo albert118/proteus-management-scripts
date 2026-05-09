@@ -2,7 +2,7 @@
 """Health monitoring script that triggers a health report Discord notification."""
 
 # Ensure logrotate is configured to avoid polluting the disk
-# /var/log/proteus-health-reports/report.log {
+# /var/log/ganymede-health-reports/report.log {
 #     weekly
 #     rotate 1
 #     compress
@@ -18,6 +18,48 @@ import requests
 import subprocess
 from pathlib import Path
 import datetime
+import yaml
+import os
+
+
+def load_config(config_path='health-report.conf.yaml'):
+    """Load configuration from YAML file or return defaults if not found."""
+    # Try to find config file in same directory as script
+    script_dir = Path(__file__).parent
+    full_config_path = script_dir / config_path
+
+    if not full_config_path.exists():
+        print(
+            f"Config file does not exist at {full_config_path}, ensure it exists before running this health report.")
+        sys.exit(1)
+
+    config = {}
+    if full_config_path.exists():
+        try:
+            with open(full_config_path, 'r') as f:
+                config = yaml.safe_load(f)
+                if config is None:
+                    config = {}
+        except yaml.YAMLError as err:
+            print(f"Error parsing config file {full_config_path}: {err}")
+            sys.exit(1)
+        except FileNotFoundError:
+            print(
+                f"Config file does not exist at {full_config_path}, ensure it exists before running this health report.")
+            sys.exit(1)
+
+    return config
+
+
+def merge_cli_with_config(args, config):
+    """
+    Merge CLI arguments with config.
+    Currently, only the --config flag overrides config loading.
+    All other settings come from the config file.
+    """
+    # CLI args are now only for runtime flags (--dry-run, --test-webhook)
+    # Config file is the single source of truth for all settings
+    return config
 
 
 def get_discord_webhook(filename) -> None | str:
@@ -46,28 +88,33 @@ def discord_notification(webhook, message):
         print(f"Failed to trigger Discord notifier webhook: {err}")
 
 
-def check_directory_size(path, threshold):
-    command = f"du -sh -t {threshold} {path} | sort -hr | head -5"
-    result = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        shell=True,
-        check=True
-    )
+def check_directory_size(paths, threshold):
+    """Check directory sizes for the given paths list and threshold."""
+    results = []
+    for path in paths:
+        command = f"du -sh -t {threshold} {path} | sort -hr | head -5"
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            shell=True,
+            check=True
+        )
 
-    if result.returncode != 0:
-        print(
-            f"Error running script check to assert disk size of {path} (exit {result.returncode}):\n{result.stderr}")
-        sys.exit(1)
+        if result.returncode != 0:
+            print(
+                f"Error running script check to assert disk size of {path} (exit {result.returncode}):\n{result.stderr}")
+            sys.exit(1)
 
-    results = [entry for entry in result.stdout.splitlines()]
+        entries = [entry for entry in result.stdout.splitlines()]
+        results.extend(entries)
+
     return results
 
 
-def check_disk_usage(threshold):
-    # /dev/vda1 is the primary disk on this machine
-    command = f"df -hlP /dev/vda1 | awk -v thr=\"{threshold}\" 'NR==1 {{ print; next }} {{ sub(/%/, \"\", $5); if ($5+0 > thr+0) print }}'"
+def check_disk_usage(disk_device, threshold):
+    """Check disk usage on the specified device against threshold."""
+    command = f"df -hlP {disk_device} | awk -v thr=\"{threshold}\" 'NR==1 {{ print; next }} {{ sub(/%/, \"\", $5); if ($5+0 > thr+0) print }}'"
 
     result = subprocess.run(
         command,
@@ -103,9 +150,9 @@ def check_service_statuses(services):
     return results
 
 
-def check_dns_resolution():
-    """Check DNS resolution by attempting to resolve google.com."""
-    command = "dig +short google.com | head -1"
+def check_dns_resolution(test_domain="google.com"):
+    """Check DNS resolution by attempting to resolve the given domain."""
+    command = f"dig +short {test_domain} | head -1"
     result = subprocess.run(
         command,
         capture_output=True,
@@ -120,9 +167,8 @@ def check_dns_resolution():
         return ["DNS Resolution: FAILED"]
 
 
-def check_network_stats():
+def check_network_stats(interfaces):
     """Run vnstat for chosen interfaces and return ASCII-formatted stats lines."""
-    interfaces = ['wg0', 'eth0']
     all_lines = []
     for iface in interfaces:
         command = f"vnstat -i {iface} -d | head -8"
@@ -133,66 +179,99 @@ def check_network_stats():
             shell=True
         )
         if result.returncode == 0 and result.stdout.strip():
-            lines = [line.rstrip() for line in result.stdout.splitlines() if line.strip()]
+            lines = [line.rstrip()
+                     for line in result.stdout.splitlines() if line.strip()]
             all_lines.extend(lines)
     if not all_lines:
         return ["Network stats unavailable (vnstat failed or not installed)"]
     return all_lines
 
 
-def save_report_to_disk(report_content):
+def check_active_docker_containers():
+    """Get list of active running docker containers in table format."""
+    command = "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        shell=True
+    )
+
+    if result.returncode != 0:
+        return ["Docker unavailable or no containers running"]
+
+    lines = [line.rstrip()
+             for line in result.stdout.splitlines() if line.strip()]
+
+    if not lines or (len(lines) == 1 and "NAMES" in lines[0]):
+        return ["No active docker containers"]
+
+    return lines
+
+
+def save_report_to_disk(report_content, report_file_location):
     """Write the report to a new log file (rotation is handled externally, e.g., logrotate)."""
-    report_file = Path("/var/log/proteus-health-reports/report.log")
+    report_file = Path(report_file_location)
+    report_file.parent.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     with open(report_file, "w") as f:
         f.write(f"[{timestamp}]\n{report_content}\n")
 
 
-def send_monitor_report(logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, dry_run=False, webhook_file='discord-webhook-url.txt'):
+def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, dry_run=False):
     """Compile system monitor report and send to Discord webhook."""
 
+    webhook_file = config['paths']['webhook_file']
     webhook_url = get_discord_webhook(webhook_file)
     if not webhook_url and not dry_run:
         return
 
-    report_sections = ["**Proteus Health Report**"]
+    report_sections = [f"**{config['hostname'].title()} Health Report**"]
 
-    if logs_warnings:
+    # Use config section toggles to conditionally add sections
+    if config['sections']['logs_warnings'] and logs_warnings:
         logs_formatted = "\n".join(f"  • {entry}" for entry in logs_warnings)
         report_sections.append(f"**🗂️ Logs Size Warnings:**\n{logs_formatted}")
 
-    if caches_warnings:
+    if config['sections']['caches_warnings'] and caches_warnings:
         caches_formatted = "\n".join(
             f"  • {entry}" for entry in caches_warnings)
         report_sections.append(
             f"**🧹 Caches Size Warnings:**\n{caches_formatted}")
 
-    if tmps_warnings:
+    if config['sections']['temp_warnings'] and tmps_warnings:
         tmps_formatted = "\n".join(f"  • {entry}" for entry in tmps_warnings)
         report_sections.append(f"**♨️ Temp Size Warnings:**\n{tmps_formatted}")
 
     # ie. has header row + data (length of 2 expected)
-    if disk_warnings and len(disk_warnings) > 1:
+    if config['sections']['disk_warnings'] and disk_warnings and len(disk_warnings) > 1:
         disk_formatted = "\n".join(f"  • {entry}" for entry in disk_warnings)
         report_sections.append(f"**💽 Disk Usage Warning:**\n{disk_formatted}")
 
     # Add service status section
-    if service_statuses:
+    if config['sections']['service_statuses'] and service_statuses:
         service_formatted = "\n".join(
             f"  • {status}" for status in service_statuses)
         report_sections.append(
             f"**🛠️ Service Statuses:**\n{service_formatted}")
 
     # Add DNS status section
-    if dns_status:
+    if config['sections']['dns_resolution'] and dns_status:
         dns_formatted = "\n".join(f"  • {status}" for status in dns_status)
         report_sections.append(f"**🌐 DNS Resolution:**\n{dns_formatted}")
+
+    # Add docker containers section
+    if config['sections']['docker_containers'] and docker_containers:
+        containers_formatted = "\n".join(docker_containers)
+        report_sections.append(
+            f"**🐳 Active Docker Containers:**\n```\n{containers_formatted}\n```")
 
     # Add network stats section
     if net_stats:
         if isinstance(net_stats, list):
             net_stats = "\n".join(net_stats)
-        report_sections.append(f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
+        report_sections.append(
+            f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
 
     report_message = "\n\n".join(report_sections)
 
@@ -217,17 +296,12 @@ def send_monitor_report(logs_warnings, caches_warnings, tmps_warnings, disk_warn
 def setup_argument_parser():
     """Set up and return the argument parser for the script."""
     parser = argparse.ArgumentParser(
-        description='System monitor script that checks disk usage and service statuses')
+        description='System monitor script that checks disk usage and service statuses',
+        epilog='Configuration is set in health-report.conf.yaml (or custom path via --config).')
+    parser.add_argument('--config', default='health-report.conf.yaml',
+                        help='Path to config file (default: health-report.conf.yaml in script directory)')
     parser.add_argument('--dry-run', action='store_true',
                         help='Print report instead of sending to Discord')
-    parser.add_argument('--webhook-file', default='discord-webhook-url.txt',
-                        help='Path to Discord webhook URL file (default: discord-webhook-url.txt)')
-    parser.add_argument('--file-size-threshold', default='20M',
-                        help='File size threshold for warnings (default: 20M)')
-    parser.add_argument('--disk-threshold', default='50',
-                        help='Disk usage percentage threshold for warnings (default: 50)')
-    parser.add_argument('--services', nargs='+', default=['nginx', 'ssh', 'fail2ban', 'wg-quick@wg0', 'ufw', 'crontab-guru-dashboard'],
-                        help='Services to monitor (default: nginx ssh fail2ban wg-quick@wg0 ufw crontab-guru-dashboard)')
     parser.add_argument('--test-webhook', action='store_true',
                         help='Send a test notification to the Discord webhook and exit')
     return parser
@@ -237,9 +311,15 @@ def main() -> None:
     parser = setup_argument_parser()
     args = parser.parse_args()
 
+    # Load configuration from file
+    config = load_config(args.config)
+
+    # Merge CLI arguments with config (CLI takes precedence)
+    config = merge_cli_with_config(args, config)
+
     if args.test_webhook:
         # Test mode: verify webhook works by sending a small test message and exit.
-        webhook_url = get_discord_webhook(args.webhook_file)
+        webhook_url = get_discord_webhook(config['paths']['webhook_file'])
         if not webhook_url:
             print("Error: Discord webhook URL not set or invalid.")
             sys.exit(1)
@@ -247,38 +327,59 @@ def main() -> None:
             webhook_url, "**Test**: Proteus Discord webhook is working ✅")
         return
 
-    if not args.dry_run and not args.webhook_file:
-        print("Error: DISCORD_WEBHOOK_URL not set. Ensure that the file source exists.")
-        sys.exit(1)
-
     if not args.dry_run:
-        webhook_url = get_discord_webhook(args.webhook_file)
+        webhook_url = get_discord_webhook(config['paths']['webhook_file'])
         if not webhook_url:
             print("Error: DISCORD_WEBHOOK_URL not set. Ensure it is provided and valid.")
             sys.exit(1)
 
-    # check disk usage for well known directories
-    logs_size_warnings = check_directory_size(
-        "/var/log/*", args.file_size_threshold)
-    caches_size_warnings = check_directory_size(
-        "/var/cache/*", args.file_size_threshold)
-    tmps_size_warnings = check_directory_size(
-        "/tmp/*", args.file_size_threshold)
+    # Run enabled checks based on config
+    logs_size_warnings = []
+    if config['sections']['logs_warnings']:
+        logs_size_warnings = check_directory_size(
+            config['paths']['logs_directories'],
+            config['thresholds']['file_size'])
 
-    # check disk usage
-    disk_usage_warning = check_disk_usage(args.disk_threshold)
+    caches_size_warnings = []
+    if config['sections']['caches_warnings']:
+        # For now, caches_warnings uses the same directories from config
+        # In future, could separate cache-specific directories
+        caches_size_warnings = check_directory_size(
+            [d for d in config['paths']['cache_directories'] if 'cache' in d],
+            config['thresholds']['file_size'])
 
-    # check known services are active
-    service_statuses = check_service_statuses(args.services)
+    tmps_size_warnings = []
+    if config['sections']['temp_warnings']:
+        tmps_size_warnings = check_directory_size(
+            [d for d in config['paths']['temp_directories'] if 'tmp' in d],
+            config['thresholds']['file_size'])
 
-    # check DNS resolution
-    dns_status = check_dns_resolution()
+    disk_usage_warning = []
+    if config['sections']['disk_warnings']:
+        disk_usage_warning = check_disk_usage(
+            config['paths']['disk_device'],
+            config['thresholds']['disk_percent'])
 
-    # check network stats
-    net_stats = check_network_stats()
+    service_statuses = []
+    if config['sections']['service_statuses']:
+        service_statuses = check_service_statuses(
+            config['services']['to_monitor'])
+
+    dns_status = []
+    if config['sections']['dns_resolution']:
+        dns_status = check_dns_resolution(config['dns']['test_domain'])
+
+    net_stats = []
+    if config['sections']['net_stats']:
+        net_stats = check_network_stats(config['network_interfaces'])
+
+    docker_containers = []
+    if config['sections']['docker_containers']:
+        docker_containers = check_active_docker_containers()
 
     # Send disk usage report to Discord
     report_message = send_monitor_report(
+        config,
         logs_size_warnings,
         caches_size_warnings,
         tmps_size_warnings,
@@ -286,12 +387,13 @@ def main() -> None:
         service_statuses,
         dns_status,
         net_stats,
-        dry_run=args.dry_run,
-        webhook_file=args.webhook_file
+        docker_containers,
+        dry_run=args.dry_run
     )
 
     # Always save report to disk for backup
-    save_report_to_disk(report_message)
+    save_report_to_disk(
+        report_message, config['paths']['report_file_location'])
 
 
 if __name__ == "__main__":
