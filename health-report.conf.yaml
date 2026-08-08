@@ -34,6 +34,9 @@ sections:
   # Docker container status
   docker_containers: true
 
+  # Power Saving stats
+  power_saving_stats: false
+
 # Network interfaces to consider for the health report. 
 # These must be provided to populate data within the net_stats report section
 network_interfaces:
