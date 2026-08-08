@@ -296,7 +296,7 @@ def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, d
 
     # Check if the message length is greater than the webhook limit and truncate if necessary
     max_length = 2000
-    if len(report_message)check_d > max_length:
+    if len(report_message) > max_length:
         # Reserve space for truncation warning
         warning = "\n\n⚠️ **Message truncated** - Report exceeded 2K char limit!"
         available_length = max_length - len(warning)
