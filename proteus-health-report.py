@@ -187,23 +187,23 @@ def check_network_stats(interfaces):
 
 
 def check_active_docker_containers():
-    """Get list of active running docker containers in table format."""
-    command = "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
-    result = subprocess.run(
+    """Get list of exited docker containers in table format."""
+    command = "docker ps -f 'status=exited' --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
+    table = subprocess.run(
         command,
         capture_output=True,
         text=True,
         shell=True
     )
 
-    if result.returncode != 0:
+    if table.returncode != 0:
         return ["Docker unavailable or no containers running"]
 
     lines = [line.rstrip()
-             for line in result.stdout.splitlines() if line.strip()]
+             for line in table.stdout.splitlines() if line.strip()]
 
     if not lines or (len(lines) == 1 and "NAMES" in lines[0]):
-        return ["No active docker containers"]
+        return ["⚠️ No active docker containers"]
 
     return lines
 
@@ -296,7 +296,7 @@ def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, d
 
     # Check if the message length is greater than the webhook limit and truncate if necessary
     max_length = 2000
-    if len(report_message) > max_length:
+    if len(report_message)check_d > max_length:
         # Reserve space for truncation warning
         warning = "\n\n⚠️ **Message truncated** - Report exceeded 2K char limit!"
         available_length = max_length - len(warning)
