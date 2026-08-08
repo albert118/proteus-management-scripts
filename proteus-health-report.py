@@ -217,8 +217,6 @@ def check_power_saving_stats():
         text=True,
         shell=True
     )
-    print("debugging")
-    print(stats)
 
     return stats.stdout.strip()
 
