@@ -209,9 +209,8 @@ def check_active_docker_containers():
 
 
 def check_power_saving_stats():
-    """Parses the audit log file of the power saving script output. Calculates how long the server has spent in power-saving mode."""
-    command = "awk -v today=$(date \"+%Y-%m-%d\") '$0 ~ today && /Time spent in power-saver/ { match($0, /power-saver: ([0-9]+)s/, arr); total_seconds += arr[1]; } END { hours = total_seconds / 3600; printf \"Total time in power-saver today (%s): %.2f hours\n\", today, hours; }' /var/log/power_profile_audit.log"
-    # result should be something like: Total time in power-saver today (2026-08-08): 0.08 hours
+    """Parses the audit log file of the power saving script output. Calculates several stats and reports some stats."""
+    command = "./check-power-usage.sh"
     result = subprocess.run(
         command,
         capture_output=True,
