@@ -211,14 +211,16 @@ def check_active_docker_containers():
 def check_power_saving_stats():
     """Parses the audit log file of the power saving script output. Calculates several stats and reports some stats."""
     command = "./check-power-usage.sh"
-    result = subprocess.run(
+    stats = subprocess.run(
         command,
         capture_output=True,
         text=True,
         shell=True
     )
+    print("debugging")
+    print(stats)
 
-    return result.stdout.strip()
+    return stats.stdout.strip()
 
 
 def save_report_to_disk(report_content, report_file_location):
