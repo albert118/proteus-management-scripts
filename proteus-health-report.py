@@ -187,39 +187,38 @@ def check_network_stats(interfaces):
 
 
 def check_active_docker_containers():
-    """Get list of active running docker containers in table format."""
-    command = "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
-    result = subprocess.run(
+    """Get list of exited docker containers in table format."""
+    command = "docker ps -f 'status=exited' --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
+    table = subprocess.run(
         command,
         capture_output=True,
         text=True,
         shell=True
     )
 
-    if result.returncode != 0:
+    if table.returncode != 0:
         return ["Docker unavailable or no containers running"]
 
     lines = [line.rstrip()
-             for line in result.stdout.splitlines() if line.strip()]
+             for line in table.stdout.splitlines() if line.strip()]
 
     if not lines or (len(lines) == 1 and "NAMES" in lines[0]):
-        return ["No active docker containers"]
+        return ["⚠️ No active docker containers"]
 
     return lines
 
 
 def check_power_saving_stats():
-    """Parses the audit log file of the power saving script output. Calculates how long the server has spent in power-saving mode."""
-    command = "awk -v today=$(date \"+%Y-%m-%d\") '$0 ~ today && /Time spent in power-saver/ { match($0, /power-saver: ([0-9]+)s/, arr); total_seconds += arr[1]; } END { hours = total_seconds / 3600; printf \"Total time in power-saver today (%s): %.2f hours\n\", today, hours; }' /var/log/power_profile_audit.log"
-    # result should be something like: Total time in power-saver today (2026-08-08): 0.08 hours
-    result = subprocess.run(
+    """Parses the audit log file of the power saving script output. Calculates several stats and reports some stats."""
+    command = "./check-power-usage.sh"
+    stats = subprocess.run(
         command,
         capture_output=True,
         text=True,
         shell=True
     )
 
-    return result.stdout.strip()
+    return stats.stdout.strip()
 
 
 def save_report_to_disk(report_content, report_file_location):

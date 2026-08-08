@@ -167,7 +167,6 @@ Add a cron job to run once per day (at 06:00am AEDT or 7pm UTC) with `crontab -e
 0 19 * * * /usr/bin/python3 ~/proteus-health-monitor.py --webhook-file ~/discord-webhook-url.txt
 ```
 
-
 ## ⚡️ Power Management and Testing
 
 Use the health report to monitor how often the server is within the power-saving profile. Opt-in by enabling it within the config,
