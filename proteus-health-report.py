@@ -209,6 +209,20 @@ def check_active_docker_containers():
     return lines
 
 
+def check_power_saving_stats():
+    """Parses the audit log file of the power saving script output. Calculates how long the server has spent in power-saving mode."""
+    command = "awk -v today=$(date \"+%Y-%m-%d\") '$0 ~ today && /Time spent in power-saver/ { match($0, /power-saver: ([0-9]+)s/, arr); total_seconds += arr[1]; } END { hours = total_seconds / 3600; printf \"Total time in power-saver today (%s): %.2f hours\n\", today, hours; }' /var/log/power_profile_audit.log"
+    # result should be something like: Total time in power-saver today (2026-08-08): 0.08 hours
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        shell=True
+    )
+
+    return result.stdout.strip()
+
+
 def save_report_to_disk(report_content, report_file_location):
     """Write the report to a new log file (rotation is handled externally, e.g., logrotate)."""
     report_file = Path(report_file_location)
@@ -218,7 +232,7 @@ def save_report_to_disk(report_content, report_file_location):
         f.write(f"[{timestamp}]\n{report_content}\n")
 
 
-def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, dry_run=False):
+def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, power_saving_stats, dry_run=False):
     """Compile system monitor report and send to Discord webhook."""
 
     webhook_file = config['paths']['webhook_file']
@@ -265,6 +279,11 @@ def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, d
         containers_formatted = "\n".join(docker_containers)
         report_sections.append(
             f"**🐳 Active Docker Containers:**\n```\n{containers_formatted}\n```")
+
+    # Add power saving stats section
+    if config['sections']['power_saving_stats'] and power_saving_stats:
+        report_sections.append(
+            f"**⚡️ Power Saving Stats:**\n```\n{power_saving_stats}\n```")
 
     # Add network stats section
     if net_stats:
@@ -377,6 +396,10 @@ def main() -> None:
     if config['sections']['docker_containers']:
         docker_containers = check_active_docker_containers()
 
+    power_saving_stats = None
+    if config['sections']['power_saving_stats']:
+        power_saving_stats = check_power_saving_stats()
+
     # Send disk usage report to Discord
     report_message = send_monitor_report(
         config,
@@ -388,6 +411,7 @@ def main() -> None:
         dns_status,
         net_stats,
         docker_containers,
+        power_saving_stats,
         dry_run=args.dry_run
     )
 
