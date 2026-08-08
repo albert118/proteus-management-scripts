@@ -52,7 +52,7 @@ fi
 # 6. Print Activity Peaks
 echo -e "\n CHRONOLOGICAL SURGES TODAY:"
 echo "--------------------------------------------------"
-echo "$DAY_LOGS" | grep "to performance" | head -n 5 | awk '{print " * Heavy workload peak detected at: " $2}' || true
+echo "$DAY_LOGS" | grep "to performance" | head -n 3 | awk '{print " * Heavy workload peak detected at: " $2}' || true
 if ! echo "$DAY_LOGS" | grep -q "to performance"; then
     echo " * No severe single-core performance surges hit the hardware today."
 fi
