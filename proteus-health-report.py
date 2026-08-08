@@ -19,7 +19,6 @@ import subprocess
 from pathlib import Path
 import datetime
 import yaml
-import os
 
 
 def load_config(config_path='health-report.conf.yaml'):
