@@ -1,4 +1,5 @@
 #!/bin/bash
+
 source .env
 
 # Name of the file containing IP addresses (one per line)

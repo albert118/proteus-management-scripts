@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # DNS Health Check Script
 
 DOMAIN="google.com"
