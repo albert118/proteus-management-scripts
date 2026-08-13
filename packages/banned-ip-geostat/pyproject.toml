@@ -3,9 +3,9 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "proteus_health_report"
-version = "1.1.0"
-description = "Runs system health checks and triggers a Discord webhook with the results."
+name = "banned_ip_geostat"
+version = "0.1.0"
+description = "Checks for banned IPs in the Fail2Ban Jails and reports their geo' stats."
 readme = "README.md"
 authors = [
   { name="Albert Ferguson", email="albertferguson118@gmail.com" },
@@ -27,7 +27,11 @@ dev = [
 ]
 
 [tool.setuptools]
-script-files = ["scripts/dynamic-power.sh", "scripts/check-power-usage.sh"]
+script-files = [
+    "scripts/check-banned-ips.sh",
+    "scripts/dns-health-check.sh",
+    "scripts/ip-bans-by-country.sh"
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
