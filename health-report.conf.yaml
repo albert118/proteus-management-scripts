@@ -5,7 +5,7 @@
 # All configuration is in this file - use --config to specify alternate location.
 
 # Sets the name of the host, used for the report title
-hostname: 'Ganymede'
+hostname: 'My Host'
 
 # Report Sections
 # Enable or disable specific report sections
@@ -26,16 +26,16 @@ sections:
   service_statuses: true
 
   # DNS resolution test
-  dns_resolution: true
+  dns_resolution: false
 
   # Network statistics with vnstat
   net_stats: false
 
   # Docker container status
-  docker_containers: true
+  docker_containers: false
 
   # Power Saving stats
-  power_saving_stats: true
+  power_saving_stats: false
 
 # Network interfaces to consider for the health report. 
 # These must be provided to populate data within the net_stats report section
@@ -69,10 +69,9 @@ paths:
   # Directories to check for temp size warnings
   temp_directories:
     - "/tmp/*"
-    - "/home/albertferguson/file-flows-node/data/results/*"
 
   # File where Discord webhook URL is stored
-  webhook_file: "/home/albertferguson/tokens/discord-webhook-url.txt"
+  webhook_file: "discord-webhook-url.txt"
 
   # Location to save report log file
   # Note: ensure the directory exists and is writable
@@ -83,11 +82,7 @@ services:
   # List of systemd services to monitor
   # Health report will show status (active/inactive) for each
   to_monitor:
-    - "ssh"
-    - "ufw"
-    - "crontab-guru-dashboard"
-    - "docker"
-    - "cloudflared"
+    - "ssh" # Forexample
 
 # DNS Testing
 dns:
