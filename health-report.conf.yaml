@@ -12,22 +12,22 @@ hostname: 'Ganymede'
 sections:
   # Directory size warnings for logs directories
   logs_warnings: true
-  
+
   # Directory size warnings for cache directories
   caches_warnings: true
-  
+
   # Directory size warnings for temporary directories
   temp_warnings: true
-  
+
   # Overall disk usage warning
   disk_warnings: true
-  
+
   # Systemctl service status checks
   service_statuses: true
-  
+
   # DNS resolution test
   dns_resolution: true
-  
+
   # Network statistics with vnstat
   net_stats: false
 
@@ -35,7 +35,7 @@ sections:
   docker_containers: true
 
   # Power Saving stats
-  power_saving_stats: false
+  power_saving_stats: true
 
 # Network interfaces to consider for the health report. 
 # These must be provided to populate data within the net_stats report section
@@ -47,32 +47,33 @@ thresholds:
   # Disk usage percentage threshold (0-100)
   # Report if disk usage exceeds this percentage
   disk_percent: 50
-  
+
   # File/directory size threshold for warnings
   # Format: number with unit (K, M, G)
   # Report directories larger than this size
-  file_size: "20M"
+  file_size: "500M"
 
 # Paths & Locations
 paths:
   # Disk device to monitor
   disk_device: "/dev/vda1"
-  
+
   # Directories to check for logs size warnings
   logs_directories:
     - "/var/log/*"
-  
+
   # Directories to check for cache size warnings
   cache_directories:
     - "/var/cache/*"
-  
+
   # Directories to check for temp size warnings
   temp_directories:
     - "/tmp/*"
-  
+    - "/home/albertferguson/file-flows-node/data/results/*"
+
   # File where Discord webhook URL is stored
   webhook_file: "/home/albertferguson/tokens/discord-webhook-url.txt"
-  
+
   # Location to save report log file
   # Note: ensure the directory exists and is writable
   report_file_location: "/var/log/health-reports/report.log"
@@ -86,9 +87,9 @@ services:
     - "ufw"
     - "crontab-guru-dashboard"
     - "docker"
+    - "cloudflared"
 
 # DNS Testing
 dns:
   # Domain to test for DNS resolution
   test_domain: "google.com"
-

@@ -203,14 +203,14 @@ def check_active_docker_containers():
              for line in table.stdout.splitlines() if line.strip()]
 
     if not lines or (len(lines) == 1 and "NAMES" in lines[0]):
-        return ["⚠️ No active docker containers"]
+        return ["✅️ No inactive docker containers"]
 
     return lines
 
 
 def check_power_saving_stats():
     """Parses the audit log file of the power saving script output. Calculates several stats and reports some stats."""
-    command = "./check-power-usage.sh"
+    command = "/home/albertferguson/git/proteus-management-scripts/check-power-usage.sh"
     stats = subprocess.run(
         command,
         capture_output=True,
@@ -368,7 +368,7 @@ def main() -> None:
     tmps_size_warnings = []
     if config['sections']['temp_warnings']:
         tmps_size_warnings = check_directory_size(
-            [d for d in config['paths']['temp_directories'] if 'tmp' in d],
+            [d for d in config['paths']['temp_directories']],
             config['thresholds']['file_size'])
 
     disk_usage_warning = []
