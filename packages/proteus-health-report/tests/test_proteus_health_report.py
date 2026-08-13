@@ -1,10 +1,8 @@
 from __future__ import annotations
-
 import importlib.util
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from types import SimpleNamespace
-
 import pytest
 import runpy
 
@@ -268,7 +266,8 @@ def test_check_disk_usage_exits_on_subprocess_error(monkeypatch):
 def test_send_monitor_report_returns_none_when_webhook_missing_and_not_dry_run(
     monkeypatch,
 ):
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "get_discord_webhook", lambda _p: None)
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "get_discord_webhook", lambda _p: None)
 
     out = PROTEUS_HEALTH_REPORT.send_monitor_report(
         logs_warnings=[],
@@ -315,8 +314,10 @@ def test_send_monitor_report_calls_discord_notification_when_not_dry_run(
         called["webhook"] = webhook
         called["message"] = message
 
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "discord_notification", fake_discord_notification)
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "get_discord_webhook", lambda _p: "http://hook.example")
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "discord_notification", fake_discord_notification)
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "get_discord_webhook", lambda _p: "http://hook.example")
 
     PROTEUS_HEALTH_REPORT.send_monitor_report(
         logs_warnings=["log1"],
@@ -336,20 +337,24 @@ def test_send_monitor_report_calls_discord_notification_when_not_dry_run(
 
 def test_main_dry_run_flow_runs_checks_and_saves_report(monkeypatch, tmp_path):
     # Prevent any disk/system side effects
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "get_discord_webhook", lambda _p: None)
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "get_discord_webhook", lambda _p: None)
     monkeypatch.setattr(
         PROTEUS_HEALTH_REPORT,
         "check_directory_size",
         lambda _p, _t: ["dir-warning"],
     )
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "check_disk_usage", lambda _t: ["disk"])
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "check_disk_usage", lambda _t: ["disk"])
     monkeypatch.setattr(
         PROTEUS_HEALTH_REPORT,
         "check_service_statuses",
         lambda _s: ["nginx: active"],
     )
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "check_dns_resolution", lambda: ["DNS Resolution: OK (1.2.3.4)"])
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "check_network_stats", lambda: ["net"])
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "check_dns_resolution", lambda: [
+                        "DNS Resolution: OK (1.2.3.4)"])
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "check_network_stats", lambda: ["net"])
 
     saved = {}
 
@@ -368,15 +373,18 @@ def test_main_dry_run_flow_runs_checks_and_saves_report(monkeypatch, tmp_path):
         assert logs_warnings == ["dir-warning"]
         return "report-body"
 
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "send_monitor_report", fake_send_monitor_report)
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "save_report_to_disk", lambda report_content: saved.update({"content": report_content}))
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "send_monitor_report", fake_send_monitor_report)
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "save_report_to_disk",
+                        lambda report_content: saved.update({"content": report_content}))
 
     import sys
 
     monkeypatch.setattr(
         sys,
         "argv",
-        ["proteus-health-report.py", "--dry-run", "--webhook-file", str(tmp_path / "x")],
+        ["proteus-health-report.py", "--dry-run",
+            "--webhook-file", str(tmp_path / "x")],
         raising=True,
     )
 
@@ -387,21 +395,25 @@ def test_main_dry_run_flow_runs_checks_and_saves_report(monkeypatch, tmp_path):
 def test_main_test_webhook_sends_test_and_returns(monkeypatch, tmp_path):
     called = {}
 
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "get_discord_webhook", lambda _p: "http://hook.example")
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "get_discord_webhook", lambda _p: "http://hook.example")
 
     def fake_discord_notification(webhook_url, message):
         called["webhook"] = webhook_url
         called["message"] = message
 
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "discord_notification", fake_discord_notification)
-    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "save_report_to_disk", lambda _c: (_ for _ in ()).throw(AssertionError("should not save")))
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT,
+                        "discord_notification", fake_discord_notification)
+    monkeypatch.setattr(PROTEUS_HEALTH_REPORT, "save_report_to_disk", lambda _c: (
+        _ for _ in ()).throw(AssertionError("should not save")))
 
     import sys
 
     monkeypatch.setattr(
         sys,
         "argv",
-        ["proteus-health-report.py", "--test-webhook", "--webhook-file", str(tmp_path / "x")],
+        ["proteus-health-report.py", "--test-webhook",
+            "--webhook-file", str(tmp_path / "x")],
         raising=True,
     )
 
