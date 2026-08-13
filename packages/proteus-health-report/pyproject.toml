@@ -1,11 +1,19 @@
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "my_project_name"
-version = "0.1.0"
-description = "A description of my existing project"
+name = "proteus_health_report"
+version = "1.1.0"
+description = "Runs system health checks and triggers a Discord webhook with the results."
 readme = "README.md"
-requires-python = ">=3.8"
+authors = [
+  { name="Albert Ferguson", email="albertferguson118@gmail.com" },
+]
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 dependencies = [] # Add external pip packages here
+
+[project.urls]
+Homepage = "https://github.com/albert118/proteus-management-scripts"
