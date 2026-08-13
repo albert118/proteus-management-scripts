@@ -1,0 +1,90 @@
+ffmpeg version N-71064-gd5e603ddc0-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2024 the FFmpeg developers
+  built with gcc 8 (Debian 8.3.0-6)
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libaom --enable-libfribidi --enable-libass --enable-libvmaf --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libdav1d --enable-libxvid --enable-libzvbi --enable-libzimg
+  libavutil      59. 27.100 / 59. 27.100
+  libavcodec     61.  9.100 / 61.  9.100
+  libavformat    61.  4.100 / 61.  4.100
+  libavdevice    61.  2.100 / 61.  2.100
+  libavfilter    10.  2.102 / 10.  2.102
+  libswscale      8.  2.100 /  8.  2.100
+  libswresample   5.  2.100 /  5.  2.100
+  libpostproc    58.  2.100 / 58.  2.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/mnt/movies/Thor (2011)/original - Thor (2011) - [HDTV-1080p][AAC 2.0][x265].mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2mp41
+    encoder         : Lavf58.45.100
+    comment         : Thor.2011.1080p.BluRay.H264.AAC-RARBG
+  Duration: 01:54:50.68, start: 0.000000, bitrate: 1522 kb/s
+  Stream #0:0[0x1](und): Video: hevc (Main) (hev1 / 0x31766568), yuv420p(tv, progressive), 1920x816 [SAR 1:1 DAR 40:17], 1291 kb/s, 23.98 fps, 23.98 tbr, 11988 tbn (default)
+      Metadata:
+        handler_name    : VideoHandler
+        vendor_id       : [0][0][0][0]
+  Stream #0:1[0x2](eng): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 224 kb/s (default)
+      Metadata:
+        handler_name    : SoundHandler
+        vendor_id       : [0][0][0][0]
+Input #1, matroska,webm, from '/home/albertferguson/file-flows-node/data/results/10b00c8c-094d-4eb1-9b92-8c91693bd97f/final - Thor (2011) 1080p hevc.mkv':
+  Metadata:
+    COMMENT         : Created by FileFlows
+                    : https://fileflows.com
+    MAJOR_BRAND     : isom
+    MINOR_VERSION   : 512
+    COMPATIBLE_BRANDS: isomiso2mp41
+    ENCODER         : Lavf61.7.103
+  Duration: 01:54:50.73, start: 0.000000, bitrate: 1248 kb/s
+  Stream #1:0: Video: hevc (Main), yuv420p(tv, progressive), 1920x816 [SAR 1:1 DAR 40:17], 23.98 fps, 23.98 tbr, 1k tbn (default)
+      Metadata:
+        HANDLER_NAME    : VideoHandler
+        VENDOR_ID       : [0][0][0][0]
+        ENCODER         : Lavc61.19.101 hevc_nvenc
+        DURATION        : 01:54:50.726000000
+  Stream #1:1(eng): Audio: aac (LC), 48000 Hz, stereo, fltp (default)
+      Metadata:
+        VENDOR_ID       : [0][0][0][0]
+        HANDLER_NAME    : SoundHandler
+        DURATION        : 01:54:50.720000000
+Stream mapping:
+  Stream #0:0 (hevc) -> setpts:default
+  Stream #1:0 (hevc) -> setpts:default
+  libvmaf:default -> Stream #0:0 (wrapped_avframe)
+  ssim:default -> Stream #0:1 (wrapped_avframe)
+  Stream #0:1 -> #0:2 (aac (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+[Parsed_ssim_5 @ 0x7bb5ec007c40] not matching timebases found between first input: 1/1000 and second input 1/11988, results may be incorrect!
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2mp41
+    comment         : Thor.2011.1080p.BluRay.H264.AAC-RARBG
+    encoder         : Lavf61.4.100
+  Stream #0:0: Video: wrapped_avframe, yuv420p(tv, progressive), 1920x816 [SAR 1:1 DAR 40:17], q=2-31, 200 kb/s, 1k tbn (default)
+      Metadata:
+        encoder         : Lavc61.9.100 wrapped_avframe
+  Stream #0:1: Video: wrapped_avframe, yuv420p(tv, progressive), 1920x816 [SAR 1:1 DAR 40:17], q=2-31, 200 kb/s, 1000k tbn
+      Metadata:
+        encoder         : Lavc61.9.100 wrapped_avframe
+  Stream #0:2(eng): Audio: pcm_s16le, 48000 Hz, stereo, s16, 1536 kb/s (default)
+      Metadata:
+        handler_name    : SoundHandler
+        vendor_id       : [0][0][0][0]
+        encoder         : Lavc61.9.100 pcm_s16le
+frame=43 43 fps=0.0 q=-0.0 q=-0.0 size=N/A time=00:00:01.75 bitrate=N/A speed= 3.5x    
+fps=0.00
+stream_0_0_q=-0.0
+stream_0_1_q=-0.0
+bitrate=N/A
+total_size=N/A
+out_time_us=1752000
+out_time_ms=1752000
+out_time=00:00:01.752000
+dup_frames=0
+drop_frames=0
+speed= 3.5x
+progress=continue
+[Parsed_ssim_5 @ 0x7bb5ec007c40] SSIM Y:0.983409 (17.801227) U:0.996963 (25.175758) V:0.997156 (25.460258) All:0.987959 (19.193382)
+[Parsed_libvmaf_4 @ 0x7bb5ec007840] VMAF score: 78.771200
+[out#0/null @ 0x26c1a7c0] video:120KiB audio:1036KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=  140 fps=101 q=-0.0 Lq=-0.0 size=N/A time=00:00:05.52 bitrate=N/A speed=3.97x
