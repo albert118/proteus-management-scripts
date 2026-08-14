@@ -1,6 +1,6 @@
-# Run the tests
+# Run the tests for the health report package
 # ----------------------------------
-name: Run all tests
+name: Run Proteus Health Report Tests
 
 on:
   pull_request:
@@ -15,6 +15,10 @@ jobs:
     strategy:
       matrix:
         python-version: [ "3.12"]
+
+    defaults:
+      run:
+        working-directory: ./src/proteus-health-report
 
     steps:
       - uses: actions/checkout@v5
