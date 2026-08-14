@@ -21,7 +21,7 @@ import datetime
 import yaml
 
 
-def load_config(config_path='health-report.conf.yaml'):
+def load_config(config_path):
     """Load configuration from YAML file or return defaults if not found."""
     # Try to find config file in same directory as script
     script_dir = Path(__file__).parent
@@ -83,8 +83,10 @@ def discord_notification(webhook, message):
     try:
         response.raise_for_status()
         print("Triggered Discord notifier webhook")
+        return True
     except requests.exceptions.HTTPError as err:
         print(f"Failed to trigger Discord notifier webhook: {err}")
+        return False
 
 
 def check_directory_size(paths, threshold):
@@ -232,11 +234,10 @@ def save_report_to_disk(report_content, report_file_location):
 
 def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, power_saving_stats, dry_run=False):
     """Compile system monitor report and send to Discord webhook."""
-
     webhook_file = config['paths']['webhook_file']
     webhook_url = get_discord_webhook(webhook_file)
     if not webhook_url and not dry_run:
-        return
+        raise ValueError('Cannot send monitor report without webhook config.')
 
     report_sections = [f"**{config['hostname'].title()} Health Report**"]
 
@@ -315,19 +316,26 @@ def setup_argument_parser():
     parser = argparse.ArgumentParser(
         description='System monitor script that checks disk usage and service statuses',
         epilog='Configuration is set in health-report.conf.yaml (or custom path via --config).')
-    parser.add_argument('--config', default='health-report.conf.yaml',
-                        help='Path to config file (default: health-report.conf.yaml in script directory)')
-    parser.add_argument('--dry-run', action='store_true',
-                        help='Print report instead of sending to Discord')
-    parser.add_argument('--test-webhook', action='store_true',
-                        help='Send a test notification to the Discord webhook and exit')
+
+    parser.add_argument(
+        '--config',
+        default='health-report.conf.yaml',
+        help='Path to config file (default: health-report.conf.yaml in script directory)')
+
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Print report instead of sending to Discord')
+
+    parser.add_argument(
+        '--test-webhook',
+        action='store_true',
+        help='Send a test notification to the Discord webhook and exit')
+
     return parser
 
 
-def main() -> None:
-    parser = setup_argument_parser()
-    args = parser.parse_args()
-
+def main(args) -> None:
     # Load configuration from file
     config = load_config(args.config)
 
@@ -419,4 +427,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = setup_argument_parser()
+    args = parser.parse_args()
+    main(args)
