@@ -1,20 +1,27 @@
-# Run the tests
+# Run the tests for the health report package
 # ----------------------------------
-name: Run all tests
+name: Run Proteus Health Report Tests
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches: 
-      - "main"
+      - "master"
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.12"]
+        python-version: [ "3.12" ]
+
+    defaults:
+      run:
+        working-directory: ./packages/proteus-health-report
 
     steps:
       - uses: actions/checkout@v5
@@ -23,14 +30,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
-          cache-dependency-path: |
-            requirements-dev.txt
-            pyproject.toml
+          cache-dependency-path: pyproject.toml
       - name: Install dependencies
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          pip install -e ".[dev,test]"
       - name: Run tests (Pytest)
         run: |
           mkdir -p junit

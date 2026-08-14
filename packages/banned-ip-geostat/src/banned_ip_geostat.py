@@ -159,8 +159,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
-    args = parse_args()
+def main(args) -> None:
     load_env(args.env_file)
 
     api_key = args.api_key or os.getenv("IPINFO_API_KEY")
@@ -222,4 +221,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(args)
