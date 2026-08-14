@@ -156,6 +156,7 @@ def describe_main_entrypoint():
 
         assert report_path.exists()
         report_content = report_path.read_text(encoding="utf-8")
+        assert report_content is not None
 
     def it_should_raise_type_error_given_no_config_path(monkeypatch, tmp_path):
         with pytest.raises(TypeError, match=re.escape("unsupported operand type(s) for /: 'PosixPath' and 'NoneType'")):
