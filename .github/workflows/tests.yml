@@ -18,7 +18,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./src/proteus-health-report
+        working-directory: /packages/proteus-health-report
 
     steps:
       - uses: actions/checkout@v5
