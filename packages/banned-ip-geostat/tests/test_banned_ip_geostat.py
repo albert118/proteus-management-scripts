@@ -1,10 +1,8 @@
 from __future__ import annotations
-
 import importlib.util
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from types import SimpleNamespace
-
 import pytest
 import os
 import runpy
@@ -428,4 +426,3 @@ def test_banned_ip_geostat_entrypoint_runs_main(monkeypatch, tmp_path):
     assert org_file.read_text(encoding="utf-8") == "OrgA\n"
     assert city_file.read_text(encoding="utf-8") == "NYC\n"
     assert "OrgA" in org_ips_file.read_text(encoding="utf-8")
-

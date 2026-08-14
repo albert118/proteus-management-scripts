@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proteus_health_report"
+version = "1.1.0"
+description = "Runs system health checks and triggers a Discord webhook with the results."
+readme = "README.md"
+authors = [
+  { name="Albert Ferguson", email="albertferguson118@gmail.com" },
+]
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+dependencies = [] # Add external pip packages here
+
+[project.urls]
+Homepage = "https://github.com/albert118/proteus-management-scripts"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-describe>=2.2.0",
+    "requests>=2.31",
+    "coverage>=7.13",
+    "pyyaml>=6.0",
+]
+
+[tool.setuptools]
+script-files = ["scripts/dynamic-power.sh", "scripts/check-power-usage.sh"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra -q"
+describe_prefixes = ["describe_"]
+python_functions = ["test_*", "it_*"]
