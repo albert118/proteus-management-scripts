@@ -5,7 +5,7 @@
 
 A small Python script that runs periodic system health checks (disk usage, service status, DNS resolution, and network bandwidth) and sends a formatted report to a Discord webhook.
 
-## 📌 What it does
+## 📌 What it Does
 
 - Checks large directories (`/var/log`, `/var/cache`, `/tmp`) and warns if files exceed a threshold.
 - Checks disk usage on `/dev/vda1` against a percentage threshold.
@@ -24,48 +24,31 @@ A small Python script that runs periodic system health checks (disk usage, servi
 - `dig` (from `dnsutils`/`bind9-dnsutils`)
 - `power-profiles-daemon` (power profile management)
 
-## 🛠️ Setup
+## 🛠️ Install
 
-1. Place the script somewhere, e.g.:
-
-```sh
-./script/proteus-health-monitor.py
-```
-
-2. Create a file containing your Discord webhook URL (one line):
+Clone the repo and install with pip tools from the top-level of the package directory. Then create the webhook config.
 
 ```sh
+pip install -e .
 echo "https://discord.com/api/webhooks/..." > ~/discord-webhook-url.txt
 ```
 
-3. Make the script executable (optional):
-
-```sh
-chmod +x ./scripts/proteus-health-monitor.py
-```
+Next see [Log Output](#-log-output), [Cron example](#-cron-example), and [Power Management and Testing](#️-power-management-and-testing).
 
 ## Usage
 
 ```sh
-python3 ./scripts/proteus-health-monitor.py --dry-run
+python3 -m proteus_health_report --help
+python3 -m proteus_health_report --dry-run
 ```
 
-## Useful flags
-
-- `--dry-run` – print the report instead of sending it
-- `--test-webhook` – send a test notification and exit
-- `--webhook-file <path>` – path to the file containing the webhook URL
-- `--file-size-threshold <size>` – threshold for `du` warnings (default `20M`)
-- `--disk-threshold <percent>` – disk usage percent threshold (default `50`)
-- `--services <list>` – space-separated list of services to check
-
-## 🧮 Log output
+## 🧮 Log Output
 
 Reports are saved under `/var/log/proteus-health-report.<timestamp>.log`.
 
 The script includes a sample `logrotate` config block (commented at the top of the script) to avoid disk pollution.
 
-## 🎯 Cron example
+## 🎯 Cron Example
 
 Add a cron job to run once per day (at 06:00am AEDT or 7pm UTC) with `crontab -e`:
 

@@ -2,7 +2,7 @@
 
 Fetches geolocation data for banned IPs and reports statistics by country, organisation, and city using the [IPInfo](https://ipinfo.io) API.
 
-## 📌 How it works
+## 📌 How it Works
 
 1. Runs `~/scripts/check-banned-ips.sh` to retrieve currently jailed IPs from fail2ban
 2. Merges them with any previously seen IPs in `ip_list.txt`, deduplicates, and sorts the list
@@ -29,15 +29,22 @@ The raw per-IP values are also written to the output files for further processin
 - An [IPInfo API key](https://ipinfo.io/signup)
 - `~/scripts/check-banned-ips.sh` present and executable (unless using `--no-banned-script`)
 
-## 🛠️ Configuration
+## 🛠️ Install
 
-Create a `.env` file in the working directory:
+Clone the repo and install with pip tools from the top-level of the package directory. Then create a dotenv file with the API key config. Alternatively, you can pass `--api-key` on the command line (not secure).
+
+```sh
+pip install -e .
+touch .env && chmod 600 .env
+```
+
+Then reate a `.env` file in the working directory:
 
 ```env
 IPINFO_API_KEY=your_api_key_here
 ```
 
-Alternatively, pass --api-key on the command line.
+Next see [Execution Examples](#️-execution-examples).
 
 ## 🌏️ Execution Examples
 
