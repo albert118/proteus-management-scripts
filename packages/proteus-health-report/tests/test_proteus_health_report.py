@@ -95,38 +95,7 @@ def describe_arg_parsing():
 
         assert defaults.dry_run is False
         assert defaults.test_webhook is False
-        assert defaults.config == 'health-report.conf.yaml'
-
-
-def describe_save_report_to_disk():
-    def it_writes_to_file_with_contents_and_timestamp(tmp_path):
-        report_file = tmp_path / "test-report.log"
-        fake_content = "hello-world"
-        # Matches [YYYYMMDD_HHMMSS]
-        expected_timestamp_re = r"\[\d{8}_\d{6}\]"
-
-        patient.save_report_to_disk(fake_content, report_file)
-
-        assert report_file.exists()
-        content = report_file.read_text(encoding="utf-8")
-
-        assert re.match(expected_timestamp_re, content) is not None
-        assert content.endswith(f"{fake_content}\n")
-
-    def it_makes_parent_directories_if_missing(tmp_path):
-        report_file = tmp_path / "grandparent/parent/test-report.log"
-        fake_content = "hello-world"
-        patient.save_report_to_disk(fake_content, report_file)
-        assert report_file.exists()
-
-    def it_allows_existing_directories(tmp_path):
-        report_file = tmp_path / "test-report.log"
-        fake_content = "hello-world"
-        patient.save_report_to_disk(fake_content, report_file)
-
-        patient.save_report_to_disk(fake_content, report_file)
-
-        assert report_file.exists()
+        assert defaults.config is None
 
 
 def describe_main_entrypoint():
@@ -147,6 +116,7 @@ def describe_main_entrypoint():
         fake_config_path.write_text(fake_config_content, encoding="utf-8")
 
         args_dict = {
+            "base_config": fake_config_path,
             'dry_run': True,
             'webhook_file': fake_webhook_path,
             'config': fake_config_path,
@@ -176,12 +146,54 @@ def describe_main_entrypoint():
             fake_config_path.write_text(fake_config_content, encoding="utf-8")
 
             args_dict = {
+                "base_config": None,  # <--
                 'dry_run': True,
                 'webhook_file': fake_webhook_path,
                 'config': None,
                 'test_webhook': False
             }
             patient.main(SimpleNamespace(**args_dict))
+
+    def it_should_merge_user_provided_config(monkeypatch, tmp_path):
+        fake_webhook = "https://example.com/webhook"
+        fake_webhook_path = tmp_path / "webhook.txt"
+        fake_webhook_path.write_text(fake_webhook, encoding="utf-8")
+
+        fake_config_path = tmp_path / "health-report.conf.yaml"
+        fake_config_content = fakes.get_fake_config_yaml()
+        fake_config_content = fake_config_content.replace(
+            "__WEBHOOK_FILE__", str(fake_webhook_path))
+
+        report_path = tmp_path / "results.log"
+        fake_config_content = fake_config_content.replace(
+            "__REPORT_FILE__", str(report_path))
+
+        fake_config_path.write_text(fake_config_content, encoding="utf-8")
+
+        fake_user_config_path = tmp_path / "my-config.yaml"
+        fake_user_config_content = fakes.get_fake_user_config_yaml()
+        fake_user_config_path.write_text(
+            fake_user_config_content, encoding="utf-8")
+
+        args_dict = {
+            "base_config": fake_config_path,
+            'dry_run': True,
+            'webhook_file': fake_webhook_path,
+            'config': fake_user_config_path,
+            'test_webhook': False
+        }
+        patient.main(SimpleNamespace(**args_dict))
+
+        assert report_path.exists()
+        report_content = report_path.read_text(encoding="utf-8")
+
+        # updated by user config
+        assert "**Different Hostname!! Health Report**" in report_content
+
+        # disabled by user config
+        assert "**🗂️ Logs Size Warnings:**" not in report_content
+        assert "**🧹 Caches Size Warnings:**" not in report_content
+        assert "**♨️ Temp Size Warnings:**" not in report_content
 
     def it_should_exit_with_code_given_discord_webhook_not_provided_and_testing_webhook(monkeypatch, tmp_path):
         with pytest.raises(SystemExit) as exc_info:
@@ -195,6 +207,7 @@ def describe_main_entrypoint():
             fake_config_path.write_text(fake_config_content, encoding="utf-8")
 
             args_dict = {
+                "base_config": fake_config_path,
                 'dry_run': True,
                 'config': fake_config_path,
                 'test_webhook': True

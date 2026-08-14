@@ -16,49 +16,7 @@ import sys
 import argparse
 import requests
 import subprocess
-from pathlib import Path
-import datetime
-import yaml
-
-
-def load_config(config_path):
-    """Load configuration from YAML file or return defaults if not found."""
-    # Try to find config file in same directory as script
-    script_dir = Path(__file__).parent
-    full_config_path = script_dir / config_path
-
-    if not full_config_path.exists():
-        print(
-            f"Config file does not exist at {full_config_path}, ensure it exists before running this health report.")
-        sys.exit(1)
-
-    config = {}
-    if full_config_path.exists():
-        try:
-            with open(full_config_path, 'r') as f:
-                config = yaml.safe_load(f)
-                if config is None:
-                    config = {}
-        except yaml.YAMLError as err:
-            print(f"Error parsing config file {full_config_path}: {err}")
-            sys.exit(1)
-        except FileNotFoundError:
-            print(
-                f"Config file does not exist at {full_config_path}, ensure it exists before running this health report.")
-            sys.exit(1)
-
-    return config
-
-
-def merge_cli_with_config(args, config):
-    """
-    Merge CLI arguments with config.
-    Currently, only the --config flag overrides config loading.
-    All other settings come from the config file.
-    """
-    # CLI args are now only for runtime flags (--dry-run, --test-webhook)
-    # Config file is the single source of truth for all settings
-    return config
+import utils
 
 
 def get_discord_webhook(filename) -> None | str:
@@ -223,15 +181,6 @@ def check_power_saving_stats():
     return stats.stdout.strip()
 
 
-def save_report_to_disk(report_content, report_file_location):
-    """Write the report to a new log file (rotation is handled externally, e.g., logrotate)."""
-    report_file = Path(report_file_location)
-    report_file.parent.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    with open(report_file, "w") as f:
-        f.write(f"[{timestamp}]\n{report_content}\n")
-
-
 def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, power_saving_stats, dry_run=False):
     """Compile system monitor report and send to Discord webhook."""
     webhook_file = config['paths']['webhook_file']
@@ -318,9 +267,15 @@ def setup_argument_parser():
         epilog='Configuration is set in health-report.conf.yaml (or custom path via --config).')
 
     parser.add_argument(
+        '--base-config',
+        required=False,
+        default="health-report.conf.yaml",
+        help='Path to user base config file. This is the expected default configuration that the report ships with.')
+
+    parser.add_argument(
         '--config',
-        default='health-report.conf.yaml',
-        help='Path to config file (default: health-report.conf.yaml in script directory)')
+        required=False,
+        help='Path to user defined config file. Allows configuring the report sections, etc. as preferred by the user.')
 
     parser.add_argument(
         '--dry-run',
@@ -336,11 +291,7 @@ def setup_argument_parser():
 
 
 def main(args) -> None:
-    # Load configuration from file
-    config = load_config(args.config)
-
-    # Merge CLI arguments with config (CLI takes precedence)
-    config = merge_cli_with_config(args, config)
+    config = utils.load_config(args.base_config, args.config)
 
     if args.test_webhook:
         # Test mode: verify webhook works by sending a small test message and exit.
@@ -422,7 +373,7 @@ def main(args) -> None:
     )
 
     # Always save report to disk for backup
-    save_report_to_disk(
+    utils.save_report_to_disk(
         report_message, config['paths']['report_file_location'])
 
 
