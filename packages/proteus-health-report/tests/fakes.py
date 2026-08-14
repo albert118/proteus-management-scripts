@@ -104,6 +104,14 @@ dns:
     """
 
 
+def get_fake_user_config_yaml():
+    return """
+hostname: 'Different hostname!!'
+sections:
+  logs_warnings: false
+    """
+
+
 class FakeWebHookFile:
     """Create a dummy object that mimics a file context manager with a fake webhook URL"""
 
