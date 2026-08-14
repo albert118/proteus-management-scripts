@@ -6,10 +6,9 @@ This check the given video stream for issues using a few strategies.
 It works for lossy re-encodes by checking the result against a snapshot of the original file.
 """
 
-
 import concurrent.futures
-import subprocess
 import json
+import subprocess
 import os
 import sys
 import argparse
@@ -17,7 +16,7 @@ import math
 import re
 import socket
 import time
-
+import utils
 
 # Safely import or instruct on installing tqdm
 # FIX: Make tqdm completely optional so it runs inside bare Docker containers
@@ -27,33 +26,6 @@ try:
 except ImportError:
     print('TQDM not found - optionally install it to enable fancy progress tracking')
     HAS_TQDM = False
-
-
-def check_dependencies(ffmpeg_path):
-    """Verify that ffmpeg is available in the system path."""
-    ffprobe_path = "ffprobe" if ffmpeg_path == "ffmpeg" else os.path.join(
-        os.path.dirname(ffmpeg_path), "ffprobe")
-    try:
-        subprocess.run([ffmpeg_path, "-version"],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run([ffprobe_path, "-version"],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except FileNotFoundError:
-        print(
-            f"Error: Executable binaries missing. Verify paths for: '{ffmpeg_path}' and '{ffprobe_path}'")
-        sys.exit(1)
-
-
-def check_inputs(original, reencoded):
-    if not os.path.exists(original):
-        print(
-            f"Error: The original input video file does not exist: {original}")
-        sys.exit(1)
-
-    if not os.path.exists(reencoded):
-        print(
-            f"Error: The re-encoded input video file does not exist: {reencoded}")
-        sys.exit(1)
 
 
 def parse_arguments():
@@ -618,12 +590,9 @@ def parse_results(output_log, min_vmaf, min_psnr, min_ssim):
         print(f"Failed to parse {output_log} file: {e}")
 
 
-if __name__ == "__main__":
-    args = parse_arguments()
-    check_dependencies(args.ffmpeg_path)
-
+def main(args) -> None:
     if (not args.parse_results):
-        check_inputs(args.original, args.reencoded)
+        utils.check_inputs(args.original, args.reencoded)
 
         results = analyze_video_similarity_parallel(
             args.original,
@@ -647,3 +616,9 @@ if __name__ == "__main__":
             json.dump(results, file)
 
     parse_results(args.output_log, args.min_vmaf, args.min_psnr, args.min_ssim)
+
+
+if __name__ == "__main__":
+    args = parse_arguments()
+    utils.check_dependencies(args.ffmpeg_path)
+    main(args)

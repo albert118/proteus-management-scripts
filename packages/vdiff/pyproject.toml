@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vdiff"
-version = "1.1.0"
+version = "1.0.0"
 description = "Check given video stream for issues using a few strategies. This works for lossy re-encodes by checking the result against a snapshot of the original file."
 readme = "README.md"
 authors = [
