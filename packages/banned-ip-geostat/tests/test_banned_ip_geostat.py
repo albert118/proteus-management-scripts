@@ -1,7 +1,6 @@
 import banned_ip_geostat as patient
 import pytest
 from tests import fakes
-from pathlib import Path
 from types import SimpleNamespace
 import os
 
