@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vdiff"
+version = "1.0.0"
+description = "Check given video stream for issues using a few strategies. This works for lossy re-encodes by checking the result against a snapshot of the original file."
+readme = "README.md"
+authors = [
+  { name="Albert Ferguson", email="albertferguson118@gmail.com" },
+]
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+dependencies = [] # Add external pip packages here
+
+[project.urls]
+Homepage = "https://github.com/albert118/proteus-management-scripts"
+
+[tool.setuptools.packages.find]
+where = ["src"]
