@@ -41,7 +41,7 @@ cd ffmpeg-*-amd64-static/
 # TODO: [ ] test with different number of workers provisioned
 # TODO: [ ] TQDM fallback/disable within docker containers
 # TODO: [ ] time container alignment to reduce processing overhead
-# TODO: [ ] testing! 
+# TODO: [ ] testing!
 
 import concurrent.futures
 import subprocess
@@ -52,7 +52,6 @@ import argparse
 import math
 import re
 import socket
-import fcntl
 import time
 
 
@@ -282,8 +281,9 @@ def analyze_video_segment(original, reencoded, ffmpeg_path, start_time, duration
         "-f", "null", "-",
     ]
 
-    process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
-    
+    process = subprocess.Popen(
+        cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+
     # --- DECOUPLED PROGRESS MONITORING LOOP ---
     frame_matcher = re.compile(r"frame=(\d+)")
     pbar = tqdm(
@@ -321,9 +321,11 @@ def analyze_video_segment(original, reencoded, ffmpeg_path, start_time, duration
             pass
 
     # --- METRIC SUMMARY EXTRACTION ---
-    ssim_regex = re.compile(r"SSIM\sY:([0-9.]+)\s\([0-9.]+\)\sU:([0-9.]+)\s\([0-9.]+\)\sV:([0-9.]+)\s\([0-9.]+\)\sAll:([0-9.]+)")
+    ssim_regex = re.compile(
+        r"SSIM\sY:([0-9.]+)\s\([0-9.]+\)\sU:([0-9.]+)\s\([0-9.]+\)\sV:([0-9.]+)\s\([0-9.]+\)\sAll:([0-9.]+)")
     vmaf_regex = re.compile(r"VMAF\sscore:\s([0-9.]+)")
-    psnr_regex = re.compile(r"PSNR\s+y:([0-9.]+)\su:([0-9.]+)\sv:([0-9.]+)\saverage:([0-9.]+)")
+    psnr_regex = re.compile(
+        r"PSNR\s+y:([0-9.]+)\su:([0-9.]+)\sv:([0-9.]+)\saverage:([0-9.]+)")
 
     metrics = {}
     for line in stderr_data.splitlines()[-50:]:
@@ -372,9 +374,12 @@ def analyze_video_similarity_parallel(original, reencoded, ffmpeg_path, output_l
 
     print(f"Analyzing: \n  Original: {original}\n  Re-encoded: {reencoded}\n")
     print("Running quality metrics via FFmpeg (this may take a few minutes)...")
-    print(f"Configuring Run -> Max Cores: {max_cores} | Workers: {num_workers} ({threads_per_worker} threads/worker)")
-    print(f"Slicing video into {num_workers} segments of {segment_duration:.1f}s each...\n")
-    print(f"Spawning {num_workers} parallel workers processing {segment_duration:.2f}s segments concurrently...")
+    print(
+        f"Configuring Run -> Max Cores: {max_cores} | Workers: {num_workers} ({threads_per_worker} threads/worker)")
+    print(
+        f"Slicing video into {num_workers} segments of {segment_duration:.1f}s each...\n")
+    print(
+        f"Spawning {num_workers} parallel workers processing {segment_duration:.2f}s segments concurrently...")
 
     segment_results = []
 
