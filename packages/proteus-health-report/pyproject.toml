@@ -35,6 +35,9 @@ script-files = ["scripts/dynamic-power.sh", "scripts/check-power-usage.sh"]
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[project.scripts]
+proteus-health-report = "main:main"
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 pythonpath = ["src"]
