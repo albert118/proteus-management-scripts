@@ -290,7 +290,7 @@ def setup_argument_parser():
     return parser
 
 
-def main(args) -> None:
+def run(args) -> None:
     config = utils.load_config(args.base_config, args.config)
 
     if args.test_webhook:
@@ -377,7 +377,11 @@ def main(args) -> None:
         report_message, config['paths']['report_file_location'])
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = setup_argument_parser()
     args = parser.parse_args()
-    main(args)
+    run(args)
+
+
+if __name__ == "__main__":
+    main()
