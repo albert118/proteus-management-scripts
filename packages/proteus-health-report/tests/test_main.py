@@ -1,4 +1,4 @@
-import main as patient
+import proteus_health_report as patient
 import pytest
 from tests import fakes
 import re

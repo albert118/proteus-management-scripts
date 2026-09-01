@@ -16,7 +16,7 @@ import sys
 import argparse
 import requests
 import subprocess
-import utils
+import proteus_health_report.utils as utils
 
 
 def get_discord_webhook(filename) -> None | str:
