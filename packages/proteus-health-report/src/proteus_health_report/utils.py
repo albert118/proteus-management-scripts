@@ -17,7 +17,7 @@ def get_discord_webhook(filename) -> None | str:
         with open(filename, 'r') as f:
             return f.read().strip()
     except FileNotFoundError:
-        print("Discord webhook config file not found, ensure it exists with a valid webhook URL.")
+        print(f"A valid Discord webhook file not found at {filename}")
         return None
 
 
