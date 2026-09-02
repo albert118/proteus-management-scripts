@@ -14,9 +14,11 @@
 
 import sys
 import argparse
+from proteus_health_report.Configuration import ProteusHealthConfig
 import requests
 import subprocess
 import proteus_health_report.utils as utils
+from proteus_health_report.HealthReportConfigParser import HealthReportConfigParser
 
 
 def get_discord_webhook(filename) -> None | str:
@@ -378,8 +380,13 @@ def run(args) -> None:
 
 
 def main() -> None:
-    parser = setup_argument_parser()
-    args = parser.parse_args()
+    arg_parser = setup_argument_parser()
+    args = arg_parser.parse_args()
+
+    config_parser = HealthReportConfigParser().load(app_name="ProteusHealth", app_author="Proteus")
+    # Reify the plain INI settings into the strict type contract using the parser
+    config: ProteusHealthConfig = config_parser.to_dataclass(ProteusHealthConfig)
+
     run(args)
 
 
