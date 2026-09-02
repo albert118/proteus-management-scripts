@@ -30,6 +30,12 @@ class HealthReportConfigParser(configparser.ConfigParser):
 
         dirs = PlatformDirs(app_name, app_author)
 
+        # dirs.user_config_dir has issues when running on a Linux server, as XDG_CONFIG_HOME will NOT be set
+        # this is used by PlatformDirs to resolve the user's home directory. Without this, the directory will fall back
+        # to the root user's home directory. This becomes confusing, as the expected config file will be ignored silently
+        # to ensure this works as expected in a cron, preset the expected values before the cron using:
+        # export USER=$(whoami); export LOGNAME=$USER;
+
         # eg. ~/config/app_name/config.ini
         user_config_path = Path(dirs.user_config_dir) / "config.ini"
         default_config_path = resources.files(app_name).joinpath("default_config.ini")
@@ -49,9 +55,13 @@ class HealthReportConfigParser(configparser.ConfigParser):
         config_hierarchy = [
             default_config_path,
             user_config_path,
-            # Local environment override - typically for development and testing
-            Path(__file__).parent.resolve() / ".config.local.ini"
         ]
+
+        # Local environment override - typically for development and testing
+        # only add this if the file exists, avoids confusion/extra files appearing in debug statement
+        local_config_override_path = Path(__file__).parent.resolve() / ".config.local.ini"
+        if local_config_override_path.exists():
+            config_hierarchy.append(local_config_override_path)
 
         if (debug):
             print('\nResolved config paths:')
