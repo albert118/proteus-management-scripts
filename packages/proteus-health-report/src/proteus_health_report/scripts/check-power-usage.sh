@@ -1,8 +1,7 @@
 #!/bin/bash
 # Checks the average power profile usage based on the audit logs from the related service
 
-# TARGET_DATE="${1:-$(date "+%Y-%m-%d")}"
-TARGET_DATE="2026-09-01"
+TARGET_DATE="${1:-$(date "+%Y-%m-%d")}"
 LOG_FILE="/var/log/power_profile_audit.log"
 
 if [ ! -f "$LOG_FILE" ]; then
