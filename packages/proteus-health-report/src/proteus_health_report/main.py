@@ -83,7 +83,11 @@ def main() -> None:
     arg_parser = setup_argument_parser()
     args = arg_parser.parse_args()
 
-    config_parser = HealthReportConfigParser().load(app_name="ProteusHealth", app_author="Proteus", debug=args.debug)
+    config_parser = HealthReportConfigParser().load(app_name="proteus_health_report",
+                                                    app_author="Albert Ferguson",
+                                                    debug=args.debug
+                                                    )
+
     # Reify the plain INI settings into the strict type contract using the parser
     config: ProteusHealthConfig = config_parser.to_dataclass(ProteusHealthConfig, debug=args.debug)
 

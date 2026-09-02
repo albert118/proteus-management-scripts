@@ -1,4 +1,5 @@
 import configparser
+from importlib import resources
 import json
 import os
 from dataclasses import fields, is_dataclass
@@ -26,22 +27,35 @@ class HealthReportConfigParser(configparser.ConfigParser):
         Initialise and bootstrap the configuration from platform-specific
         common directories and local runtime overrides.
         """
+
         dirs = PlatformDirs(app_name, app_author)
+
+        # eg. ~/config/app_name/config.ini
+        user_config_path = Path(dirs.user_config_dir) / "config.ini"
+        default_config_path = resources.files(app_name).joinpath("default_config.ini")
+
+        if not user_config_path.exists():
+            print(f"Default config not found. Creating default configuration at: {user_config_path}")
+
+            # read the packaged default config and write it to the system path to create a default
+            with default_config_path.open("r") as f:
+                default_content = f.read()
+
+            user_config_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(user_config_path, 'w', encoding='utf-8') as configfile:
+                configfile.write(default_content)
 
         # allow user overrides by defining a hierarchy of configs
         config_hierarchy = [
-            # System-wide default configuration (eg/etc/app_name/config.ini on Linux)
-            Path(dirs.site_config_dir) / "config.ini",
-
-            # ~/config/app_name/config.ini)
-            Path(dirs.user_config_dir) / "config.ini",
-
+            default_config_path,
+            user_config_path,
             # Local environment override - typically for development and testing
-            Path(os.getcwd()) / ".config.local.ini"
+            Path(__file__).parent.resolve() / ".config.local.ini"
         ]
 
         if (debug):
-            print(config_hierarchy)
+            print('\nResolved config paths:')
+            pprint.pprint([str(p) for p in config_hierarchy], indent=2)
 
         self.load_hierarchy(config_hierarchy)
 
