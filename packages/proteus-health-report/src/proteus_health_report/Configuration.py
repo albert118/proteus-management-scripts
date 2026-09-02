@@ -40,17 +40,16 @@ class FileReportingSection:
     temp_directories: List[str]
 
 
-@dataclass
-class ServicesSection:
-    to_monitor: List[str]
-
 # ==============================================================================
 
 
 @dataclass
 class ProteusHealthConfig:
+    """
+    Configuration dataclass. Provides strict typing for the various configuration options.
+    This is bound to runtime a configuration instance via the HealthReportConfigParser.to_dataclass method.
+    """
     report: ReportSection
     sections: SectionsSection
     networking_reporting: NetworkingReportingSection
     file_reporting: FileReportingSection
-    services: ServicesSection  # Handles '[services]:' as configparser drops the colon

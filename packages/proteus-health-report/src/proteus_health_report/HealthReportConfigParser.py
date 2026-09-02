@@ -3,6 +3,7 @@ import json
 import os
 from dataclasses import fields, is_dataclass
 from pathlib import Path
+import pprint
 from platformdirs import PlatformDirs
 from typing import Any, Callable, List, Optional, Type, TypeVar, cast, get_args, get_origin
 
@@ -20,9 +21,9 @@ class HealthReportConfigParser(configparser.ConfigParser):
         super().__init__(*args, **kwargs)
         self.loaded_files: List[str] = []
 
-    def load(self, app_name: str, app_author: str) -> "HealthReportConfigParser":
+    def load(self, app_name: str, app_author: str, debug=False) -> "HealthReportConfigParser":
         """
-        Initialise and bootstrap the configuration from platform-specific 
+        Initialise and bootstrap the configuration from platform-specific
         common directories and local runtime overrides.
         """
         dirs = PlatformDirs(app_name, app_author)
@@ -39,6 +40,9 @@ class HealthReportConfigParser(configparser.ConfigParser):
             Path(os.getcwd()) / ".config.local.ini"
         ]
 
+        if (debug):
+            print(config_hierarchy)
+
         self.load_hierarchy(config_hierarchy)
 
         return self
@@ -49,7 +53,7 @@ class HealthReportConfigParser(configparser.ConfigParser):
         self.loaded_files = self.read(paths_to_read)
         return self.loaded_files
 
-    def to_dataclass(self, cls: Type[T]) -> T:
+    def to_dataclass(self, cls: Type[T], debug=False) -> T:
         """
         Reflects over a top-level orchestrator dataclass, where each field name
         corresponds to an INI [section], and nested fields match options.
@@ -92,7 +96,13 @@ class HealthReportConfigParser(configparser.ConfigParser):
             section_instances[section_name] = section_cls(**option_kwargs)
 
         # Instantiate container configuration structure wrapper
-        return cls(**section_instances)
+        result = cls(**section_instances)
+
+        if (debug):
+            print('\nResolved config:')
+            pprint.pprint(str(result), indent=4)
+
+        return result
 
     def get_clean_string(self, section: str, option: str) -> str:
         """Retrieves a string value and strips raw internal wrapping quotes (' or ")."""

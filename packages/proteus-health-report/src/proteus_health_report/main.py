@@ -154,64 +154,51 @@ def check_power_saving_stats():
     return stats.stdout.strip()
 
 
-def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, power_saving_stats, dry_run=False):
+def send_monitor_report(config: ProteusHealthConfig, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, power_saving_stats, dry_run=False):
     """Compile system monitor report and send to Discord webhook."""
-    webhook_file = config['paths']['webhook_file']
-    webhook_url = utils.get_discord_webhook(webhook_file)
+    webhook_url = utils.get_discord_webhook(config.report.webhook_file)
     if not webhook_url and not dry_run:
         raise ValueError('Cannot send monitor report without webhook config.')
 
-    report_sections = [f"**{config['hostname'].title()} Health Report**"]
+    report_sections = [f"**{config.report.hostname.title()} Health Report**"]
 
-    # Use config section toggles to conditionally add sections
-    if config['sections']['logs_warnings'] and logs_warnings:
+    if logs_warnings:
         logs_formatted = "\n".join(f"  • {entry}" for entry in logs_warnings)
         report_sections.append(f"**🗂️ Logs Size Warnings:**\n{logs_formatted}")
 
-    if config['sections']['caches_warnings'] and caches_warnings:
-        caches_formatted = "\n".join(
-            f"  • {entry}" for entry in caches_warnings)
-        report_sections.append(
-            f"**🧹 Caches Size Warnings:**\n{caches_formatted}")
+    if caches_warnings:
+        caches_formatted = "\n".join(f"  • {entry}" for entry in caches_warnings)
+        report_sections.append(f"**🧹 Caches Size Warnings:**\n{caches_formatted}")
 
-    if config['sections']['temp_warnings'] and tmps_warnings:
+    if tmps_warnings:
         tmps_formatted = "\n".join(f"  • {entry}" for entry in tmps_warnings)
         report_sections.append(f"**♨️ Temp Size Warnings:**\n{tmps_formatted}")
 
     # ie. has header row + data (length of 2 expected)
-    if config['sections']['disk_warnings'] and disk_warnings and len(disk_warnings) > 1:
+    if disk_warnings and len(disk_warnings) > 1:
         disk_formatted = "\n".join(f"  • {entry}" for entry in disk_warnings)
         report_sections.append(f"**💽 Disk Usage Warning:**\n{disk_formatted}")
 
-    # Add service status section
-    if config['sections']['service_statuses'] and service_statuses:
-        service_formatted = "\n".join(
-            f"  • {status}" for status in service_statuses)
-        report_sections.append(
-            f"**🛠️ Service Statuses:**\n{service_formatted}")
+    if service_statuses:
+        service_formatted = "\n".join(f"  • {status}" for status in service_statuses)
+        report_sections.append(f"**🛠️ Service Statuses:**\n{service_formatted}")
 
-    # Add DNS status section
-    if config['sections']['dns_resolution'] and dns_status:
+    if dns_status:
         dns_formatted = "\n".join(f"  • {status}" for status in dns_status)
         report_sections.append(f"**🌐 DNS Resolution:**\n{dns_formatted}")
 
-    # Add docker containers section
-    if config['sections']['docker_containers'] and docker_containers:
+    if docker_containers:
         containers_formatted = "\n".join(docker_containers)
-        report_sections.append(
-            f"**🐳 Active Docker Containers:**\n```\n{containers_formatted}\n```")
+        report_sections.append(f"**🐳 Active Docker Containers:**\n```\n{containers_formatted}\n```")
 
-    # Add power saving stats section
-    if config['sections']['power_saving_stats'] and power_saving_stats:
-        report_sections.append(
-            f"**⚡️ Power Saving Stats:**\n```\n{power_saving_stats}\n```")
+    if power_saving_stats:
+        report_sections.append(f"**⚡️ Power Saving Stats:**\n```\n{power_saving_stats}\n```")
 
     # Add network stats section
     if net_stats:
         if isinstance(net_stats, list):
             net_stats = "\n".join(net_stats)
-        report_sections.append(
-            f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
+        report_sections.append(f"**📶 Network Stats (vnstat):**\n```\n{net_stats}\n```")
 
     report_message = "\n\n".join(report_sections)
 
@@ -254,6 +241,11 @@ def setup_argument_parser():
         '--dry-run',
         action='store_true',
         help='Print report instead of sending to Discord')
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Print debug logs')
 
     parser.add_argument(
         '--test-webhook',
@@ -355,12 +347,11 @@ def main() -> None:
     arg_parser = setup_argument_parser()
     args = arg_parser.parse_args()
 
-    config_parser = HealthReportConfigParser().load(app_name="ProteusHealth", app_author="Proteus")
+    config_parser = HealthReportConfigParser().load(app_name="ProteusHealth", app_author="Proteus", debug=args.debug)
     # Reify the plain INI settings into the strict type contract using the parser
-    config: ProteusHealthConfig = config_parser.to_dataclass(ProteusHealthConfig)
-    print(config)
+    config: ProteusHealthConfig = config_parser.to_dataclass(ProteusHealthConfig, debug=args.debug)
 
-    # run(args)
+    run(args, config)
 
 
 if __name__ == "__main__":
