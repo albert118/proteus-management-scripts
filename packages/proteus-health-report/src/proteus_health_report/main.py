@@ -15,38 +15,9 @@
 import sys
 import argparse
 from proteus_health_report.Configuration import ProteusHealthConfig
-import requests
 import subprocess
 import proteus_health_report.utils as utils
 from proteus_health_report.HealthReportConfigParser import HealthReportConfigParser
-
-
-def get_discord_webhook(filename) -> None | str:
-    try:
-        with open(filename, 'r') as f:
-            return f.read().strip()
-    except FileNotFoundError:
-        print("Discord webhook config file not found, ensure it exists with a valid webhook URL.")
-        return None
-
-
-def discord_notification(webhook, message):
-    data = {
-        "content": message
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    response = requests.post(webhook, json=data, headers=headers)
-
-    try:
-        response.raise_for_status()
-        print("Triggered Discord notifier webhook")
-        return True
-    except requests.exceptions.HTTPError as err:
-        print(f"Failed to trigger Discord notifier webhook: {err}")
-        return False
 
 
 def check_directory_size(paths, threshold):
@@ -186,7 +157,7 @@ def check_power_saving_stats():
 def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, disk_warnings, service_statuses, dns_status, net_stats, docker_containers, power_saving_stats, dry_run=False):
     """Compile system monitor report and send to Discord webhook."""
     webhook_file = config['paths']['webhook_file']
-    webhook_url = get_discord_webhook(webhook_file)
+    webhook_url = utils.get_discord_webhook(webhook_file)
     if not webhook_url and not dry_run:
         raise ValueError('Cannot send monitor report without webhook config.')
 
@@ -257,7 +228,7 @@ def send_monitor_report(config, logs_warnings, caches_warnings, tmps_warnings, d
         print(report_message)
         print(f"\nMessage length: {len(report_message)} characters")
     else:
-        discord_notification(webhook_url, report_message)
+        utils.discord_notification(webhook_url, report_message)
 
     return report_message
 
@@ -292,21 +263,19 @@ def setup_argument_parser():
     return parser
 
 
-def run(args) -> None:
-    config = utils.load_config(args.base_config, args.config)
-
+def run(args, config: ProteusHealthConfig) -> None:
     if args.test_webhook:
         # Test mode: verify webhook works by sending a small test message and exit.
-        webhook_url = get_discord_webhook(config['paths']['webhook_file'])
+        webhook_url = utils.get_discord_webhook(config['paths']['webhook_file'])
         if not webhook_url:
             print("Error: Discord webhook URL not set or invalid.")
             sys.exit(1)
-        discord_notification(
+        utils.discord_notification(
             webhook_url, "**Test**: Proteus Discord webhook is working ✅")
         return
 
     if not args.dry_run:
-        webhook_url = get_discord_webhook(config['paths']['webhook_file'])
+        webhook_url = utils.get_discord_webhook(config['paths']['webhook_file'])
         if not webhook_url:
             print("Error: DISCORD_WEBHOOK_URL not set. Ensure it is provided and valid.")
             sys.exit(1)
@@ -386,8 +355,9 @@ def main() -> None:
     config_parser = HealthReportConfigParser().load(app_name="ProteusHealth", app_author="Proteus")
     # Reify the plain INI settings into the strict type contract using the parser
     config: ProteusHealthConfig = config_parser.to_dataclass(ProteusHealthConfig)
+    print(config)
 
-    run(args)
+    # run(args)
 
 
 if __name__ == "__main__":
