@@ -266,7 +266,7 @@ def setup_argument_parser():
 def run(args, config: ProteusHealthConfig) -> None:
     if args.test_webhook:
         # Test mode: verify webhook works by sending a small test message and exit.
-        webhook_url = utils.get_discord_webhook(config['paths']['webhook_file'])
+        webhook_url = utils.get_discord_webhook(config.report.webhook_file)
         if not webhook_url:
             print("Error: Discord webhook URL not set or invalid.")
             sys.exit(1)
@@ -275,57 +275,61 @@ def run(args, config: ProteusHealthConfig) -> None:
         return
 
     if not args.dry_run:
-        webhook_url = utils.get_discord_webhook(config['paths']['webhook_file'])
+        webhook_url = utils.get_discord_webhook(config.report.webhook_file)
         if not webhook_url:
             print("Error: DISCORD_WEBHOOK_URL not set. Ensure it is provided and valid.")
             sys.exit(1)
 
     # Run enabled checks based on config
     logs_size_warnings = []
-    if config['sections']['logs_warnings']:
+    if config.sections.logs_warnings:
         logs_size_warnings = check_directory_size(
-            config['paths']['logs_directories'],
-            config['thresholds']['file_size'])
+            config.file_reporting.logs_directories,
+            config.file_reporting.file_size
+        )
 
     caches_size_warnings = []
-    if config['sections']['caches_warnings']:
+    if config.sections.caches_warnings:
         # For now, caches_warnings uses the same directories from config
         # In future, could separate cache-specific directories
         caches_size_warnings = check_directory_size(
-            [d for d in config['paths']['cache_directories'] if 'cache' in d],
-            config['thresholds']['file_size'])
+            [d for d in config.file_reporting.cache_directories if 'cache' in d],
+            config.file_reporting.file_size
+        )
 
     tmps_size_warnings = []
-    if config['sections']['temp_warnings']:
+    if config.sections.temp_warnings:
         tmps_size_warnings = check_directory_size(
-            [d for d in config['paths']['temp_directories']],
-            config['thresholds']['file_size'])
+            [d for d in config.file_reporting.temp_directories],
+            config.file_reporting.file_size
+        )
 
     disk_usage_warning = []
-    if config['sections']['disk_warnings']:
+    if config.sections.disk_warnings:
         disk_usage_warning = check_disk_usage(
-            config['paths']['disk_device'],
-            config['thresholds']['disk_percent'])
+            config.file_reporting.disk_device,
+            config.file_reporting.disk_percent
+        )
 
     service_statuses = []
-    if config['sections']['service_statuses']:
-        service_statuses = check_service_statuses(
-            config['services']['to_monitor'])
+    if config.sections.service_statuses:
+        service_statuses = check_service_statuses(config.report.services_to_monitor)
 
     dns_status = []
-    if config['sections']['dns_resolution']:
-        dns_status = check_dns_resolution(config['dns']['test_domain'])
+    if config.sections.dns_resolution:
+        # for now, only resolve the first option to keep it simple
+        dns_status = check_dns_resolution(config.networking_reporting.dns_test_domain[0])
 
     net_stats = []
-    if config['sections']['net_stats']:
-        net_stats = check_network_stats(config['network_interfaces'])
+    if config.sections.net_stats:
+        net_stats = check_network_stats(config.networking_reporting.network_interfaces)
 
     docker_containers = []
-    if config['sections']['docker_containers']:
+    if config.sections.docker_containers:
         docker_containers = check_active_docker_containers()
 
     power_saving_stats = None
-    if config['sections']['power_saving_stats']:
+    if config.sections.power_saving_stats:
         power_saving_stats = check_power_saving_stats()
 
     # Send disk usage report to Discord
@@ -344,8 +348,7 @@ def run(args, config: ProteusHealthConfig) -> None:
     )
 
     # Always save report to disk for backup
-    utils.save_report_to_disk(
-        report_message, config['paths']['report_file_location'])
+    utils.save_report_to_disk(report_message, config.report.report_file_location)
 
 
 def main() -> None:
