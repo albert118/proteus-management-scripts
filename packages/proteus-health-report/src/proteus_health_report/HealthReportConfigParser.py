@@ -37,6 +37,8 @@ class HealthReportConfigParser(configparser.ConfigParser):
 
         # Intercept stripped cron environments before platformdirs initializes
         if not os.environ.get("XDG_CONFIG_HOME") and os.environ.get("HOME"):
+            if (debug):
+                print('XDG_CONFIG_HOME was not set - setting XDG_CONFIG_HOME to HOME')
             os.environ["XDG_CONFIG_HOME"] = os.path.join(os.environ["HOME"], ".config")
 
         # eg. ~/config/app_name/config.ini
