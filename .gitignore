@@ -110,4 +110,4 @@ cython_debug/
 pyvenv.cfg
 
 # local dev config
-default.local.ini
+.config.local.ini

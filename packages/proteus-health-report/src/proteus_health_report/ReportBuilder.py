@@ -119,7 +119,8 @@ class ReportBuilder():
         if not self.config.sections.dns_resolution:
             return self
 
-        command = f"dig +short {self.config.networking_reporting.dns_test_domain} | head -1"
+        # For now, only resolve the first option to keep it simple.
+        command = f"dig +short {self.config.networking_reporting.dns_test_domain[0]} | head -1"
         result = subprocess.run(
             command,
             capture_output=True,
