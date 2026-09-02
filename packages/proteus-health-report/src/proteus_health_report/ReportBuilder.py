@@ -1,3 +1,4 @@
+from importlib import resources
 import subprocess
 
 from proteus_health_report.Configuration import ProteusHealthConfig
@@ -187,13 +188,14 @@ class ReportBuilder():
         return self
 
     def with_power_saving_stats(self) -> 'ReportBuilder':
+        """Parses the audit log file of the power saving script output. Calculates several stats and reports some stats."""
         if not self.config.sections.power_saving_stats:
             return self
 
-        """Parses the audit log file of the power saving script output. Calculates several stats and reports some stats."""
-        command = "/home/albertferguson/git/proteus-management-scripts/check-power-usage.sh"
+        command_path = resources.files("proteus_health_report").joinpath("scripts").joinpath("check-power-usage.sh")
+
         stats = subprocess.run(
-            command,
+            str(command_path),
             capture_output=True,
             text=True,
             shell=True
