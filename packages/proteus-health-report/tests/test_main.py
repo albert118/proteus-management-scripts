@@ -122,7 +122,7 @@ def describe_main_entrypoint():
             'config': fake_config_path,
             'test_webhook': False
         }
-        patient.main(SimpleNamespace(**args_dict))
+        patient.run(SimpleNamespace(**args_dict))
 
         assert report_path.exists()
         report_content = report_path.read_text(encoding="utf-8")
@@ -152,7 +152,7 @@ def describe_main_entrypoint():
                 'config': None,
                 'test_webhook': False
             }
-            patient.main(SimpleNamespace(**args_dict))
+            patient.run(SimpleNamespace(**args_dict))
 
     def it_should_merge_user_provided_config(monkeypatch, tmp_path):
         fake_webhook = "https://example.com/webhook"
@@ -182,7 +182,7 @@ def describe_main_entrypoint():
             'config': fake_user_config_path,
             'test_webhook': False
         }
-        patient.main(SimpleNamespace(**args_dict))
+        patient.run(SimpleNamespace(**args_dict))
 
         assert report_path.exists()
         report_content = report_path.read_text(encoding="utf-8")
@@ -212,5 +212,5 @@ def describe_main_entrypoint():
                 'config': fake_config_path,
                 'test_webhook': True
             }
-            patient.main(SimpleNamespace(**args_dict))
+            patient.run(SimpleNamespace(**args_dict))
         assert exc_info.value.code == 1

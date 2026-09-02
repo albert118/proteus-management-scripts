@@ -109,3 +109,5 @@ cython_debug/
 # Local python venv config
 pyvenv.cfg
 
+# local dev config
+.config.local.ini
