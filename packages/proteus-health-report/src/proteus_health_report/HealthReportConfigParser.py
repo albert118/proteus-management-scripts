@@ -34,7 +34,10 @@ class HealthReportConfigParser(configparser.ConfigParser):
         # this is used by PlatformDirs to resolve the user's home directory. Without this, the directory will fall back
         # to the root user's home directory. This becomes confusing, as the expected config file will be ignored silently
         # to ensure this works as expected in a cron, preset the expected values before the cron using:
-        # export USER=$(whoami); export LOGNAME=$USER;
+
+        # Intercept stripped cron environments before platformdirs initializes
+        if not os.environ.get("XDG_CONFIG_HOME") and os.environ.get("HOME"):
+            os.environ["XDG_CONFIG_HOME"] = os.path.join(os.environ["HOME"], ".config")
 
         # eg. ~/config/app_name/config.ini
         user_config_path = Path(dirs.user_config_dir) / "config.ini"
