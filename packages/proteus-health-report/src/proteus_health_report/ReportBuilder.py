@@ -193,6 +193,7 @@ class ReportBuilder():
             return self
 
         command_path = resources.files("proteus_health_report").joinpath("scripts").joinpath("check-power-usage.sh")
+        print(command_path)
 
         stats = subprocess.run(
             str(command_path),
@@ -202,6 +203,7 @@ class ReportBuilder():
         )
 
         self.power_saving_stats = stats.stdout.strip()
+        print(self.power_saving_stats)
         return self
 
     def build(self) -> str:
