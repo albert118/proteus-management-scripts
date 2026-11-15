@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 dependencies = [
-    "certifi==2026.7.22",
+    "certifi==2026.10.18",
     "charset-normalizer==3.5.1",
     "idna==3.19",
     "platformdirs==4.11.7",
