@@ -137,8 +137,6 @@ def fake_path(expected_path, contents):
 
     return faked_path
 
-# The test using monkeypatch
-
 
 class FakeSuccessResponse:
     def __init__(self, status_code=200):
