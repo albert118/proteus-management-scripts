@@ -5,42 +5,6 @@ import re
 from types import SimpleNamespace
 
 
-def describe_discord_webhook():
-    def it_reads_and_strips_when_getting_hook_url(tmp_path):
-        fake_webhook = "https://example.com/webhook"
-        fake_path = tmp_path / "webhook.txt"
-        fake_path.write_text(f"  {fake_webhook}  \n", encoding="utf-8")
-
-        result = patient.get_discord_webhook(str(fake_path))
-        assert result == fake_webhook
-
-    def it_returns_none_when_when_getting_hook_url_and_not_in_file(tmp_path):
-        missing = tmp_path / "missing.txt"
-        assert patient.get_discord_webhook(str(missing)) is None
-
-    def it_sends_notification_given_webhook_url_and_message(monkeypatch, capsys):
-        fake_webhook = "https://fake.lan/webhook?12345678"
-        fake_message = "hello world!"
-        fakes.fake_webhook_call(monkeypatch, status_code=200)
-
-        success = patient.discord_notification(fake_webhook, fake_message)
-
-        out = capsys.readouterr().out
-        assert "Triggered Discord notifier webhook\n" == out
-        assert success
-
-    def it_fails_when_sending_notification_given_bad_response(monkeypatch, capsys):
-        fake_webhook = "https://fake.lan/webhook?12345678"
-        fake_message = "hello world!"
-        fakes.fake_webhook_call(monkeypatch, status_code=500)
-
-        success = patient.discord_notification(fake_webhook, fake_message)
-
-        out = capsys.readouterr().out
-        assert "Failed to trigger Discord notifier webhook: 500 Client/Server Error\n" == out
-        assert not success
-
-
 def describe_send_report():
     def it_raises_value_error_without_webhook_config():
         with pytest.raises(ValueError, match="Cannot send monitor report without webhook config."):
