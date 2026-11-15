@@ -16,6 +16,7 @@ Homepage = "https://github.com/albert118/proteus-management-scripts"
 
 [dependency-groups]
 dev = [
+  "pytest-describe>=3.2.0",
   "requests>=2.31",
 ]
 

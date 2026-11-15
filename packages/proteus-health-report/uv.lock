@@ -520,6 +520,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
+    { name = "pytest-describe" },
     { name = "requests" },
 ]
 test = [
@@ -543,6 +544,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "pytest", specifier = ">=8.3.0" },
+    { name = "pytest-describe", specifier = ">=3.2.0" },
     { name = "requests", specifier = ">=2.31" },
 ]
 test = [

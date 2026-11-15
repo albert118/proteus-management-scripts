@@ -13,6 +13,7 @@ source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "pytest-describe" },
     { name = "requests" },
 ]
 test = [
@@ -26,7 +27,10 @@ test = [
 [package.metadata]
 
 [package.metadata.requires-dev]
-dev = [{ name = "requests", specifier = ">=2.31" }]
+dev = [
+    { name = "pytest-describe", specifier = ">=3.2.0" },
+    { name = "requests", specifier = ">=2.31" },
+]
 test = [
     { name = "coverage", specifier = ">=7.13" },
     { name = "pytest", specifier = ">=8.0.0" },
