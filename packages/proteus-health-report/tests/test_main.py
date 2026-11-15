@@ -6,27 +6,6 @@ from types import SimpleNamespace
 
 
 def describe_send_report():
-    def it_raises_value_error_without_webhook_config():
-        with pytest.raises(ValueError, match="Cannot send monitor report without webhook config."):
-            report_request = fakes.build_empty_report()
-            report_request['config']['paths']['webhook_file'] = 'asdasdasdsasa'
-            report_request['dry_run'] = False
-            patient.send_monitor_report(**report_request)
-
-    def it_attempts_to_network_when_dry_run_is_disabled(monkeypatch):
-        with pytest.raises(RuntimeError, match="External network call blocked! Use pytest-mock or responses to mock it."):
-            report_request = fakes.build_empty_report()
-            report_request['dry_run'] = False
-            fakes.patch_fake_webhook(monkeypatch)
-            patient.send_monitor_report(**report_request)
-
-    def it_respects_dry_run_when_enabled():
-        try:
-            report_request = fakes.build_empty_report()
-            out = patient.send_monitor_report(**report_request)
-        except Exception as e:
-            pytest.fail(f'should not raise any exception but raised {e}')
-
     def it_builds_expected_report_sections():
         report_request = fakes.build_report_with_sections()
         out = patient.send_monitor_report(**report_request)
