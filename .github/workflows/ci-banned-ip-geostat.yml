@@ -5,6 +5,9 @@ on:
     types: [ opened, synchronize, reopened ]
     branches: 
       - "main"
+    paths:
+      - '.github/workflows/ci-banned-ip-geostat.yml'
+      - './packages/banned-ip-geostat/**'
   workflow_dispatch:
 
 permissions:
