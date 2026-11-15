@@ -1,5 +1,3 @@
-# Run the tests for the health report package
-# ----------------------------------
 name: CI - proteus-health-report
 
 on:

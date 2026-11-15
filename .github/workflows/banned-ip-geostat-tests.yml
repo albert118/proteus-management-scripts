@@ -1,5 +1,3 @@
-# Run the tests for the banned IP geostat package
-# ----------------------------------
 name: CI - banned-ip-geostat
 
 on:
