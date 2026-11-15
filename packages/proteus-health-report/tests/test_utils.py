@@ -1,4 +1,4 @@
-import utils as patient
+from proteus_health_report import utils as patient
 import re
 
 
