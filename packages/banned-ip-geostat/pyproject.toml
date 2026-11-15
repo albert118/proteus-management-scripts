@@ -18,10 +18,11 @@ dependencies = [] # Add external pip packages here
 [project.urls]
 Homepage = "https://github.com/albert118/proteus-management-scripts"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "requests>=2.31",
+  "requests>=2.31",
 ]
+
 test = [
   "pytest>=8.0.0",
   "pytest-describe>=2.2.0",

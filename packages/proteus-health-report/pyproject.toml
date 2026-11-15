@@ -8,17 +8,26 @@ version = "1.1.0"
 description = "Runs system health checks and triggers a Discord webhook with the results."
 readme = "README.md"
 authors = [
-  { name="Albert Ferguson", email="albertferguson118@gmail.com" },
+  { name="Albert Ferguson [theQuantumMechanic]", email="albertferguson118@gmail.com" },
 ]
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
-dependencies = [] # Add external pip packages here
 
 [project.urls]
 Homepage = "https://github.com/albert118/proteus-management-scripts"
 
-[project.optional-dependencies]
+dependencies = [
+    "certifi==2026.7.22",
+    "charset-normalizer==3.5.1",
+    "idna==3.19",
+    "platformdirs==4.11.7",
+    "requests==2.34.2",
+    "urllib3==2.8.0",
+] # Add external pip packages here
+
+
+[dependency-groups]
 dev = [
     "requests>=2.31",
 ]
