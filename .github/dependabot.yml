@@ -1,0 +1,25 @@
+version: 2
+updates:
+    - package-ecosystem: 'pip'
+      directory: '/packages/'
+      schedule:
+          interval: 'weekly'
+          day: 'sunday'
+          time: '16:00'
+      groups:
+          python-dependencies:
+              update-types:
+                  - 'minor'
+                  - 'patch'
+
+    - package-ecosystem: 'github-actions'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
+          day: 'sunday'
+          time: '16:00'
+      groups:
+          github-actions:
+              update-types:
+                  - 'minor'
+                  - 'patch'

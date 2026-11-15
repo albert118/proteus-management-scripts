@@ -1,10 +1,10 @@
 # Run the tests for the health report package
 # ----------------------------------
-name: Run Proteus Health Report Tests
+name: CI - proteus-health-report
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
     branches: 
       - "master"
   workflow_dispatch:
@@ -24,9 +24,9 @@ jobs:
         working-directory: ./packages/proteus-health-report
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
