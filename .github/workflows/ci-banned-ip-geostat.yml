@@ -38,7 +38,7 @@ jobs:
         run: uv sync --locked --dev
 
       - name: Build
-        run: uv build
+        run: uv build --no-sources --require-hashes
 
       - name: Run tests (pytest)
         env:

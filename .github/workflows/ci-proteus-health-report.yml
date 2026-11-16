@@ -38,7 +38,7 @@ jobs:
         run: uv sync --locked --dev
 
       - name: Build
-        run: uv build
+        run: uv build --no-sources --require-hashes
 
       - name: Run tests (pytest)
         env:
@@ -47,6 +47,7 @@ jobs:
 
       - name: Demo Run
         run: |
+          uv build
           pip install -e .
-          python3 proteus_health_report --help
-          python3 proteus_health_report --dry-run
+          proteus_health_report --help
+          proteus_health_report --dry-run

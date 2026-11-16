@@ -29,8 +29,9 @@ A small Python script that runs periodic system health checks (disk usage, servi
 Clone the repo and install with pip tools from the top-level of the package directory. Then create the webhook config.
 
 ```sh
-pip install -e .
-echo "https://discord.com/api/webhooks/..." > ~/discord-webhook-url.txt
+uv build
+touch ~/discord-webhook-url.txt # copy in your webhook URL
+chmod 600 ~/discord-webhook-url.txt
 ```
 
 Next see [Log Output](#-log-output), [Cron example](#-cron-example), and [Power Management and Testing](#️-power-management-and-testing).
@@ -38,8 +39,8 @@ Next see [Log Output](#-log-output), [Cron example](#-cron-example), and [Power 
 ## Usage
 
 ```sh
-python3 -m proteus_health_report --help
-python3 -m proteus_health_report --dry-run
+proteus-health-report --help
+proteus-health-report --dry-run
 ```
 
 ## 🧮 Log Output
