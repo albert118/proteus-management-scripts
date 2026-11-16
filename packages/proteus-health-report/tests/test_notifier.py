@@ -5,7 +5,6 @@ from pathlib import Path
 
 
 def describe_notifier():
-
     def it_raises_value_error_without_webhook_config_given_not_a_dry_run():
         with pytest.raises(ValueError, match="Cannot send monitor report without webhook config."):
             fake_config = build_fake_config()

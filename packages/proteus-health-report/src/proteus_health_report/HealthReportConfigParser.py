@@ -26,6 +26,8 @@ class HealthReportConfigParser(configparser.ConfigParser):
         """
         Initialise and bootstrap the configuration from platform-specific
         common directories and local runtime overrides.
+
+        Enabling debug will log various debug info and disable writing the default user config file if it was missing.
         """
 
         dirs = PlatformDirs(app_name, app_author)
@@ -45,7 +47,10 @@ class HealthReportConfigParser(configparser.ConfigParser):
         user_config_path = Path(dirs.user_config_dir) / "config.ini"
         default_config_path = resources.files(app_name).joinpath("default_config.ini")
 
-        if not user_config_path.exists():
+        # while debugging - don't write the user config file
+        # this is a bit of a hack for testing, as I love the convenience of always having this file generated without any
+        # extra fuss on fresh installs
+        if not user_config_path.exists() and not debug:
             print(f"Default config not found. Creating default configuration at: {user_config_path}")
 
             # read the packaged default config and write it to the system path to create a default
@@ -57,10 +62,9 @@ class HealthReportConfigParser(configparser.ConfigParser):
                 configfile.write(default_content)
 
         # allow user overrides by defining a hierarchy of configs
-        config_hierarchy = [
-            default_config_path,
-            user_config_path,
-        ]
+        config_hierarchy = [default_config_path]
+        if user_config_path.exists():
+            config_hierarchy.append(user_config_path)
 
         # Local environment override - typically for development and testing
         # only add this if the file exists, avoids confusion/extra files appearing in debug statement

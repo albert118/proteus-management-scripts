@@ -28,17 +28,6 @@ def setup_argument_parser():
         epilog='Configuration is set in health-report.conf.yaml (or custom path via --config).')
 
     parser.add_argument(
-        '--base-config',
-        required=False,
-        default="health-report.conf.yaml",
-        help='Path to user base config file. This is the expected default configuration that the report ships with.')
-
-    parser.add_argument(
-        '--config',
-        required=False,
-        help='Path to user defined config file. Allows configuring the report sections, etc. as preferred by the user.')
-
-    parser.add_argument(
         '--dry-run',
         action='store_true',
         help='Print report instead of sending to Discord')
