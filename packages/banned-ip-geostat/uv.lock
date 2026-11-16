@@ -10,13 +10,11 @@ resolution-markers = [
 name = "banned-ip-geostat"
 version = "0.1.0"
 source = { editable = "." }
-dependencies = [
-    { name = "pytest-github-report" },
-]
 
 [package.dev-dependencies]
 dev = [
     { name = "pytest-describe" },
+    { name = "pytest-github-report" },
     { name = "requests" },
 ]
 test = [
@@ -28,11 +26,11 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pytest-github-report", specifier = ">=0.0.1" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pytest-describe", specifier = ">=3.2.0" },
+    { name = "pytest-github-report", specifier = ">=0.0.1" },
     { name = "requests", specifier = ">=2.31" },
 ]
 test = [

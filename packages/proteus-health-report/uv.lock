@@ -556,7 +556,6 @@ dependencies = [
     { name = "charset-normalizer" },
     { name = "idna" },
     { name = "platformdirs" },
-    { name = "pytest-github-report" },
     { name = "requests" },
     { name = "urllib3" },
 ]
@@ -565,6 +564,7 @@ dependencies = [
 dev = [
     { name = "pytest" },
     { name = "pytest-describe" },
+    { name = "pytest-github-report" },
     { name = "requests" },
 ]
 test = [
@@ -581,7 +581,6 @@ requires-dist = [
     { name = "charset-normalizer", specifier = "==3.5.1" },
     { name = "idna", specifier = "==3.19" },
     { name = "platformdirs", specifier = "==4.11.7" },
-    { name = "pytest-github-report", specifier = ">=0.0.1" },
     { name = "requests", specifier = "==2.34.2" },
     { name = "urllib3", specifier = "==2.8.0" },
 ]
@@ -590,6 +589,7 @@ requires-dist = [
 dev = [
     { name = "pytest", specifier = ">=8.3.0" },
     { name = "pytest-describe", specifier = ">=3.2.0" },
+    { name = "pytest-github-report", specifier = ">=0.0.1" },
     { name = "requests", specifier = ">=2.31" },
 ]
 test = [
