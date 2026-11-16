@@ -47,7 +47,7 @@ jobs:
 
       - name: Demo Run
         run: |
-          uv build
-          pip install -e .
+          uv build --quiet
+          pip install -e . --quiet
           proteus-health-report --help
           proteus-health-report --dry-run
