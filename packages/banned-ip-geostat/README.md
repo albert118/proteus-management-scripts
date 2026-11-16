@@ -25,7 +25,6 @@ The raw per-IP values are also written to the output files for further processin
 
 ## ✅ Requirements
 
-- Python 3.12+
 - An [IPInfo API key](https://ipinfo.io/signup)
 - `~/scripts/check-banned-ips.sh` present and executable (unless using `--no-banned-script`)
 
@@ -34,17 +33,15 @@ The raw per-IP values are also written to the output files for further processin
 Clone the repo and install with pip tools from the top-level of the package directory. Then create a dotenv file with the API key config. Alternatively, you can pass `--api-key` on the command line (not secure).
 
 ```sh
-pip install -e .
-touch .env && chmod 600 .env
+uv tool install .
+touch .env && chmod 600 .env # copy in your API key
 ```
 
-Then reate a `.env` file in the working directory:
+Then add the API key to your dotenv file:
 
 ```env
 IPINFO_API_KEY=your_api_key_here
 ```
-
-Next see [Execution Examples](#️-execution-examples).
 
 ## 🌏️ Execution Examples
 
