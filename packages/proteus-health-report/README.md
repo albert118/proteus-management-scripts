@@ -12,25 +12,28 @@ A small Python script that runs periodic system health checks (disk usage, servi
 - Verifies that key services (nginx, ssh, fail2ban, wg-quick@wg0, ufw) are active.
 - Verifies DNS resolution for `google.com` using `dig`.
 - Fetches concise **monthly + daily** bandwidth stats per interface from `vnstat`.
-- Checks the power profile of the server and how much time the server has spent power saving
+- Checks the power profile of the server and how much time the server has spent power saving.
 - Monitors power (profile) usage.
-- Sends a single Discord message with the results and writes a timestamped report file to `/var/log/proteus-health-reports/`.
+- Sends a Discord notification with the results and writes a timestamped log file with the results.
 
-## ✅ Requirements
+## ✅ Additional Requirements
 
-- Python 3
-- `requests` Python package
+You'll probably want a few additional tools to enable the full report. These enable various networking and power 
+reporting.
+
 - `vnstat` (v2.x) installed and configured
 - `dig` (from `dnsutils`/`bind9-dnsutils`)
 - `power-profiles-daemon` (power profile management)
 
 ## 🛠️ Install
 
-Clone the repo and install with pip tools from the top-level of the package directory. Then create the webhook config.
+I haven't published a package in this repo automatically yet. Build from source then create a secure file to 
+home your [Discord webhook URL](https://docs.discord.com/developers/resources/webhook). Keep this webhook URL safe!
 
 ```sh
-pip install -e .
-echo "https://discord.com/api/webhooks/..." > ~/discord-webhook-url.txt
+uv build
+touch ~/discord-webhook-url.txt # copy in your webhook URL
+chmod 600 ~/discord-webhook-url.txt
 ```
 
 Next see [Log Output](#-log-output), [Cron example](#-cron-example), and [Power Management and Testing](#️-power-management-and-testing).
@@ -38,15 +41,28 @@ Next see [Log Output](#-log-output), [Cron example](#-cron-example), and [Power 
 ## Usage
 
 ```sh
-python3 -m proteus_health_report --help
-python3 -m proteus_health_report --dry-run
+proteus-health-report --help
+proteus-health-report --dry-run
 ```
 
 ## 🧮 Log Output
 
-Reports are saved under `/var/log/proteus-health-report.<timestamp>.log`.
+Reports are saved under `~/logs/proteus_health_report/report.log` by default. This can be changed in config. These can fill up your disk if left unattended. It is recommended to configure logrotate to avoid this. A sample block is included below.
 
-The script includes a sample `logrotate` config block (commented at the top of the script) to avoid disk pollution.
+Additional logs to will include a timestamp in the title to differentiate them, in addition to their title.
+
+```config
+Ensure logrotate is configured to avoid polluting the disk
+~/logs/proteus_health_report/report.log {
+    weekly
+    rotate 1
+    compress
+    notifempty
+    create 644 root root
+    delaycompress
+    missingok
+}
+```
 
 ## 🎯 Cron Example
 
@@ -117,18 +133,15 @@ sudo systemctl status dynamic-power
 
 ### Profiling/Verifying the Daemon
 
+> [!note]
 > This uses taskset + cpulimit to test on certain thresholds.
 
 Test current profiles like so.
 
 1. `tail -f /var/log/power_profile_audit.log` to view the logs
 2. start a load on a single-core with `taskset -c 4 cpulimit -l 40 -- md5sum /dev/zero`
-
-Verify that the logs change to balanced from power-saving after a few seconds. 
-
+   - Verify that the logs change to balanced from power-saving after a few seconds. 
 3. `killall md5sum` to stop the previous test
-4. then test more cores for performance mode with `for i in {0..8}; do taskset -c $i sha256sum /dev/zero & done`
-   
-Verify that the logs change to performance.
-
+4. Then test more cores for performance mode with `for i in {0..8}; do taskset -c $i sha256sum /dev/zero & done`
+   - Verify that the logs change to performance.
 5. `killall sha256sum` to stop the previous test

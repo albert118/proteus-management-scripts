@@ -1,26 +1,32 @@
-[build-system]
-requires = ["setuptools >= 77.0.3"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "proteus_health_report"
 version = "1.1.0"
 description = "Runs system health checks and triggers a Discord webhook with the results."
 readme = "README.md"
 authors = [
-  { name="Albert Ferguson", email="albertferguson118@gmail.com" },
+  { name="Albert Ferguson [theQuantumMechanic]", email="albertferguson118@gmail.com" },
 ]
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
-dependencies = [] # Add external pip packages here
+dependencies = [
+    "certifi==2026.10.18",
+    "charset-normalizer==3.5.1",
+    "idna==3.19",
+    "platformdirs==4.11.7",
+    "requests==2.34.2",
+    "urllib3==2.8.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/albert118/proteus-management-scripts"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "requests>=2.31",
+    "pytest>=8.3.0",
+    "pytest-describe>=3.2.0",
+    "pytest-github-report>=0.0.1",
 ]
 test = [
   "pytest>=8.0.0",
@@ -29,11 +35,19 @@ test = [
   "pyyaml>=6.0",
 ]
 
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 "proteus_health_report" = ["*.ini", "src/proteus_health_report/scripts/*.sh"]
+
+[tool.uv]
+package = true
 
 [project.scripts]
 proteus-health-report = "proteus_health_report.main:main"
