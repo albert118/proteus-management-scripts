@@ -1,7 +1,8 @@
 # Proteus Management Scripts
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-![Python 3.12+](https://shields.io)
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
 
 
 These are various scripts I use to manage servers. These include:
