@@ -1,4 +1,4 @@
-# banned-ip-geostat
+# ip-tools
 
 Fetches geolocation data for banned IPs and reports statistics by country, organisation, and city using the [IPInfo](https://ipinfo.io) API.
 
@@ -47,13 +47,13 @@ IPINFO_API_KEY=your_api_key_here
 
 ```sh
 # Standard run — fetch new banned IPs and look them up
-python banned-ip-geostat.py
+python ip-tools.py
 
 # Use a specific API key without a .env file
-python banned-ip-geostat.py --api-key sk_abc123
+python ip-tools.py --api-key sk_abc123
 
 # Skip fail2ban and analyse a manually curated IP list
-python banned-ip-geostat.py --no-banned-script --ip-file my_ips.txt
+python ip-tools.py --no-banned-script --ip-file my_ips.txt
 ```
 
 ## 🌏️ Output Sample

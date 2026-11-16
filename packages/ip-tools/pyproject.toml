@@ -35,6 +35,9 @@ script-files = [
     "scripts/ip-bans-by-country.sh"
 ]
 
+[project.scripts]
+ip-tools = "ip-tools.main:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

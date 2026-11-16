@@ -59,7 +59,7 @@ def describe_helpers():
         import sys
 
         monkeypatch.setattr(
-            sys, "argv", ["banned-ip-geostat.py"], raising=True
+            sys, "argv", ["ip-tools.py"], raising=True
         )
         args = patient.parse_args()
 
