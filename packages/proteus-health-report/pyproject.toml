@@ -26,6 +26,7 @@ dev = [
     "requests>=2.31",
     "pytest>=8.3.0",
     "pytest-describe>=3.2.0",
+    "pytest-github-report>=0.0.1",
 ]
 test = [
   "pytest>=8.0.0",

@@ -18,6 +18,7 @@ Homepage = "https://github.com/albert118/proteus-management-scripts"
 dev = [
   "pytest-describe>=3.2.0",
   "requests>=2.31",
+  "pytest-github-report>=0.0.1",
 ]
 
 test = [
