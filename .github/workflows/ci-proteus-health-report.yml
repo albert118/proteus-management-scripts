@@ -44,3 +44,8 @@ jobs:
         env:
           pytest_github_report: true
         run: uv run pytest
+
+      - name: Demo Run
+        run: |
+          python3 -m proteus_health_report --help
+          python3 -m proteus_health_report --dry-run
