@@ -48,5 +48,5 @@ jobs:
       - name: Demo Run
         run: |
           pip install -e .
-          python3 -m proteus_health_report --help
-          python3 -m proteus_health_report --dry-run
+          python3 proteus_health_report --help
+          python3 proteus_health_report --dry-run
