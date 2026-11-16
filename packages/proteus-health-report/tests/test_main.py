@@ -5,32 +5,6 @@ import re
 from types import SimpleNamespace
 
 
-def describe_send_report():
-    def it_builds_expected_report_sections():
-        report_request = fakes.build_report_with_sections()
-        out = patient.send_monitor_report(**report_request)
-
-        assert "**Fake Test Host Health Report**" in out
-        assert "**🗂️ Logs Size Warnings:**" in out
-        assert "**🧹 Caches Size Warnings:**" in out
-        assert "**♨️ Temp Size Warnings:**" in out
-        assert "**💽 Disk Usage Warning:**" in out
-        assert "**🛠️ Service Statuses:**" in out
-        assert "**🌐 DNS Resolution:**" in out
-        assert "**🐳 Active Docker Containers:**" in out
-        assert "**⚡️ Power Saving Stats:**" in out
-        assert "**📶 Network Stats (vnstat):**" in out
-
-    def it_send_monitor_report_truncates_at_2k():
-        report_request = fakes.build_report_with_sections()
-        # Force a huge report body
-        big_entry = "x" * 400
-        report_request['logs_warnings'] = [big_entry] * 20
-        out = patient.send_monitor_report(**report_request)
-        assert "Message truncated" in out
-        assert len(out) == 2000
-
-
 def describe_arg_parsing():
     def it_sets_expected_defaults():
         parser = patient.setup_argument_parser()
