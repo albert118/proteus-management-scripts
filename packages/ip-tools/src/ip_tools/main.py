@@ -5,7 +5,7 @@ import os
 import sys
 import argparse
 from pathlib import Path
-import banned_ip_geostat
+from ip_tools import banned_ip_geostat
 
 
 def load_env(env_file: str) -> None:
