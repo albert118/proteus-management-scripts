@@ -29,7 +29,7 @@ def setup_argument_parser():
 
     parser.add_argument(
         "--ip-file", default="ip_list.txt",
-        type='Path',
+        type=Path,
         help="File of known IPs (one per line). New IPs are merged in and the file is updated. (default: ip_list.txt)",
     )
     parser.add_argument(
@@ -38,27 +38,27 @@ def setup_argument_parser():
     )
     parser.add_argument(
         "--env-file", default=".env",
-        type='Path',
+        type=Path,
         help="Path to .env file containing IPINFO_API_KEY (default: .env)",
     )
     parser.add_argument(
         "--country-file", default="country_count.txt",
-        type='Path',
+        type=Path,
         help="Output file for country data (default: country_count.txt)",
     )
     parser.add_argument(
         "--org-file", default="org_count.txt",
-        type='Path',
+        type=Path,
         help="Output file for org data (default: org_count.txt)",
     )
     parser.add_argument(
         "--city-file", default="city_count.txt",
-        type='Path',
+        type=Path,
         help="Output file for city data (default: city_count.txt)",
     )
     parser.add_argument(
         "--org-ips-file", default="org_ips.txt",
-        type='Path',
+        type=Path,
         help="Output file listing IPs grouped by organisation (default: org_ips.txt)",
     )
     parser.add_argument(
