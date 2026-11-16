@@ -1,4 +1,4 @@
-import filter_ips as patient
+from ip_tools import filter_ips as patient
 from types import SimpleNamespace
 
 

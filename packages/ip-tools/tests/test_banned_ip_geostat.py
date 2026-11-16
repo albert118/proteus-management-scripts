@@ -1,4 +1,4 @@
-import banned_ip_geostat as patient
+from ip_tools import banned_ip_geostat as patient
 import pytest
 from tests import fakes
 from types import SimpleNamespace
