@@ -15,11 +15,11 @@
 
 
 # Configuration Thresholds
-BALANCED_THRESHOLD=35    # Trigger balanced if any core > 35%
+BALANCED_THRESHOLD=40    # Trigger balanced if any core > 40%
 PERF_THRESHOLD=80        # Trigger performance if any core > 80%
 
-CHECK_INTERVAL=10        # Check system state every 10 seconds
-COOLDOWN_PERIOD=60       # Stay in a higher power state for at least 60 seconds before stepping down
+CHECK_INTERVAL=15        # Check system state every 15 seconds
+COOLDOWN_PERIOD=300      # Stay in a higher power state for at least 5 minutes seconds before stepping down
 LOG_FILE="/var/log/power_profile_audit.log"
 
 # Tracking variables
