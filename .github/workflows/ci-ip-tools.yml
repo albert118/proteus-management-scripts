@@ -1,4 +1,4 @@
-name: CI - banned-ip-geostat
+name: CI - ip-tools
 
 on:
   pull_request:
@@ -6,8 +6,8 @@ on:
     branches: 
       - "main"
     paths:
-      - '.github/workflows/ci-banned-ip-geostat.yml'
-      - './packages/banned-ip-geostat/**'
+      - '.github/workflows/ci-ip-tools.yml'
+      - './packages/ip-tools/**'
   workflow_dispatch:
 
 permissions:
@@ -22,7 +22,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./packages/banned-ip-geostat
+        working-directory: ./packages/ip-tools
 
     steps:
       - name: Checkout

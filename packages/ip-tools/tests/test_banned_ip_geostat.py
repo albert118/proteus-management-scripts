@@ -1,4 +1,4 @@
-import banned_ip_geostat as patient
+from ip_tools import banned_ip_geostat as patient
 import pytest
 from tests import fakes
 from types import SimpleNamespace
@@ -59,7 +59,7 @@ def describe_helpers():
         import sys
 
         monkeypatch.setattr(
-            sys, "argv", ["banned-ip-geostat.py"], raising=True
+            sys, "argv", ["ip-tools.py"], raising=True
         )
         args = patient.parse_args()
 

@@ -1,5 +1,5 @@
 [project]
-name = "banned_ip_geostat"
+name = "ip_tools"
 version = "0.1.0"
 description = "Checks for banned IPs in the Fail2Ban Jails and reports their geo' stats."
 readme = "README.md"
@@ -35,11 +35,19 @@ script-files = [
     "scripts/ip-bans-by-country.sh"
 ]
 
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.uv]
 package = true
+
+[project.scripts]
+ip-tools = "ip_tools.main:main"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
@@ -48,7 +56,3 @@ testpaths = ["tests"]
 addopts = "-ra -q"
 describe_prefixes = ["describe_"]
 python_functions = ["test_*", "it_*"]
-
-[build-system]
-requires = ["setuptools >= 77.0.3"]
-build-backend = "setuptools.build_meta"
