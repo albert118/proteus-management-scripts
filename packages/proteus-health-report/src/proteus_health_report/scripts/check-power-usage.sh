@@ -43,7 +43,7 @@ printf " * %-15s : %6.2f hours  (%5.1f%%)\n" "performance"  "$(bc -l <<< "$PERF_
 echo -e "\n SYSTEM STABILITY & ACTIVITY SYNC:"
 echo "--------------------------------------------------"
 echo " * Profile Transitions Triggered : $TRANSITIONS changes"
-if [ "$TRANSITIONS" -gt 150 ]; then
+if [ "$TRANSITIONS" -gt 250 ]; then
     echo " ! WARNING: High frequency thrashing detected. Consider raising COOLDOWN_PERIOD."
 else
     echo " * Stability Rating             : Optimal"
