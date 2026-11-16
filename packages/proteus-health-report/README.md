@@ -31,7 +31,7 @@ I haven't published a package in this repo automatically yet. Build from source 
 home your [Discord webhook URL](https://docs.discord.com/developers/resources/webhook). Keep this webhook URL safe!
 
 ```sh
-uv build
+uv tool install .
 touch ~/discord-webhook-url.txt # copy in your webhook URL
 chmod 600 ~/discord-webhook-url.txt
 ```
