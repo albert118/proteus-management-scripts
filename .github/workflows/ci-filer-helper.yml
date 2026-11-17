@@ -10,7 +10,7 @@ on:
       - main
     paths:
       - '.github/workflows/ci-file-helper.yml'
-      - './packages/file-helper/**'
+      - 'packages/file-helper/**'
   workflow_dispatch:
 
 permissions:

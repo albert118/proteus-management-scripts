@@ -10,7 +10,7 @@ on:
       - main
     paths:
       - '.github/workflows/ci-proteus-health-report.yml'
-      - './packages/proteus-health-report/**'
+      - 'packages/proteus-health-report/**'
   workflow_dispatch:
 
 permissions:

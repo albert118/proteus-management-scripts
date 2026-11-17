@@ -10,7 +10,7 @@ on:
       - main
     paths:
       - '.github/workflows/ci-ip-tools.yml'
-      - './packages/ip-tools/**'
+      - 'packages/ip-tools/**'
   workflow_dispatch:
 
 permissions:
