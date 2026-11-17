@@ -1,13 +1,16 @@
 name: CI - file-helper
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types: [ opened, synchronize, reopened ]
     branches: 
-      - "main"
+      - main
     paths:
       - '.github/workflows/ci-file-helper.yml'
-      - './packages/file-helper/**'
+      - 'packages/file-helper/**'
   workflow_dispatch:
 
 permissions:
@@ -39,8 +42,3 @@ jobs:
 
       - name: Build
         run: uv build --no-sources
-
-      # - name: Run tests (pytest)
-      #   env:
-      #     pytest_github_report: true
-      #   run: uv run pytest

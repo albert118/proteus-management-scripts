@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Health monitoring script that triggers a health report Discord notification."""
 
 # Ensure logrotate is configured to avoid polluting the disk

@@ -3,9 +3,7 @@ from proteus_health_report.HealthReportConfigParser import HealthReportConfigPar
 from proteus_health_report.Configuration import ProteusHealthConfig
 import re
 from types import SimpleNamespace
-
 import pytest
-from tests import fakes
 from pathlib import Path
 
 

@@ -1,13 +1,16 @@
 name: CI - proteus-health-report
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types: [ opened, synchronize, reopened ]
     branches: 
-      - "main"
+      - main
     paths:
       - '.github/workflows/ci-proteus-health-report.yml'
-      - './packages/proteus-health-report/**'
+      - 'packages/proteus-health-report/**'
   workflow_dispatch:
 
 permissions:

@@ -1,7 +1,12 @@
 [project]
 name = "file-helper"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "Some common Python file helper utilities I frequently use"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/albert118/proteus-management-scripts"

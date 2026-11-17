@@ -4,12 +4,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Cleaner:
-    def __init__(self):
-        self._data = None
-
-    def set_data(self, data: str):
+    def __init__(self, data: str):
         self._data = data
-        return self
 
     def clean_edges(self):
         self._data = self._data.strip()
@@ -25,8 +21,7 @@ class Cleaner:
 def clean_file_name(fn: str) -> str:
     try:
         return (
-            Cleaner()
-            .set_data(fn)
+            Cleaner(fn)
             .clean_edges()
             .clean_full_stops()
             .clean()
