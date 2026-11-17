@@ -1,10 +1,13 @@
 name: CI - file-helper
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types: [ opened, synchronize, reopened ]
     branches: 
-      - "main"
+      - main
     paths:
       - '.github/workflows/ci-file-helper.yml'
       - './packages/file-helper/**'
