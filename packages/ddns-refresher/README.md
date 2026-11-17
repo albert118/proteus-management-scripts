@@ -1,7 +1,6 @@
 # Python DDNS Refresher
 
-A script to help check and update public IP addresses. If it's found, it pushes the
-updated address to Cloudflare using their API.
+A script to help check and update public IP addresses. If it's found, it pushes the updated address to Cloudflare using their API.
 
 This service uses <https://api.ipify.org> to resolve the current network's public facing IP address. This is quite a nice service, as it is free and allows millions of RPS without issue. See their docs [here](https://www.ipify.org/) for more.
 

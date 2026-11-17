@@ -9,3 +9,5 @@ These are various scripts I use to manage servers. These include:
 - [Proteus Health Report | Health Reporting](./packages/proteus-health-report/README.md)
 - [IP Tools | Fail2Ban Monitoring, etc.](./packages/ip-tools/README.md)
 - [vdiff | Video Quality Checking](./packages/vdiff/README.md)
+- [file-helper | File helper utilities](./packages/file-helper/README.md)
+- [DDNS Refresher | Cloudflare automation](./packages/ddns-refresher/README.md)
