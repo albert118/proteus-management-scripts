@@ -18,8 +18,7 @@ A small Python script that runs periodic system health checks (disk usage, servi
 
 ## ✅ Additional Requirements
 
-You'll probably want a few additional tools to enable the full report. These enable various networking and power 
-reporting.
+You'll probably want a few additional tools to enable the full report. These enable various networking and power reporting.
 
 - `vnstat` (v2.x) installed and configured
 - `dig` (from `dnsutils`/`bind9-dnsutils`)
