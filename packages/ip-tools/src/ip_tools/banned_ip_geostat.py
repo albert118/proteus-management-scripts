@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """IP geolocation statistics tool using IPInfo API."""
 
 import ipaddress

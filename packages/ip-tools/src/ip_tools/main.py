@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Banned IP checker scripts"""
 
 import os

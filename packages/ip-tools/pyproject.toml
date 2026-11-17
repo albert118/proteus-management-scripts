@@ -30,9 +30,9 @@ test = [
 
 [tool.setuptools]
 script-files = [
-    "scripts/check-banned-ips.sh",
-    "scripts/dns-health-check.sh",
-    "scripts/ip-bans-by-country.sh"
+    "src/ip_tools/scripts/check-banned-ips.sh",
+    "src/ip_tools/scripts/dns-health-check.sh",
+    "src/ip_tools/scripts/ip-bans-by-country.sh"
 ]
 
 
