@@ -8,6 +8,7 @@ import argparse
 from file_helper.commands.commands import Command
 from file_helper.commands.junk_archiver import JunkArchiver
 from file_helper.commands.media_junk_archiver import MediaJunkArchiver
+from file_helper.commands.convert_to_nfo import NfoMediaConverter
 
 _logger = logging.getLogger(__name__)
 
@@ -39,6 +40,9 @@ def setup_argument_parser():
     collect_garbage_parser = subparsers.add_parser(
         Command.archive_media_libray_junk.value, help="Clean-up the media library junk content.")
 
+    convert_to_nfo_parser = subparsers.add_parser(
+        Command.convert_to_nfo.value, help="Converts *.info.json files from media-roller to standard nfo files.")
+
     return parser
 
 
@@ -50,6 +54,9 @@ def handle_command(args: argparse.Namespace):
         case Command.archive_junk:
             archiver = JunkArchiver(args.whitelist, args.blacklist, args.dir, args.archivedir, _logger)
             archiver.collect()
+        case Command.convert_to_nfo:
+            converter = NfoMediaConverter(args.dir, _logger)
+            converter.convert()
         case _:
             raise ValueError(f'unhandled command provided: {args.command}')
 

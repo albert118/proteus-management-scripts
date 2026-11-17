@@ -18,6 +18,9 @@ class BaseArchiver(ABC):
     """
 
     def __init__(self, dir: Path, archive_directory: Path, logger: Logger):
+        if not dir.exists():
+            raise ValueError(f'Input directory {dir} does not exist')
+
         self.cwd = dir
         self.archive_directory = archive_directory
         self.logger = logger
