@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Some file handling utils."""
 
 from pathlib import Path
