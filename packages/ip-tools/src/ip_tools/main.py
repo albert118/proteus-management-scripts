@@ -5,6 +5,7 @@ import sys
 import argparse
 from pathlib import Path
 from ip_tools import banned_ip_geostat
+# from ip_tools import filter_ips # TODO: arg parser command to use this
 
 
 def load_env(env_file: str) -> None:
@@ -91,7 +92,6 @@ def main() -> None:
     arg_parser = setup_argument_parser()
     args = arg_parser.parse_args()
     load_env(args.env_file)
-
     run(args)
 
 
