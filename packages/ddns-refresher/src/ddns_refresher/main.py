@@ -119,7 +119,7 @@ def get_dns_records(zone_id, api_token):
     return []
 
 
-def put_dns_update(zone_id, dns_record_id, dns_record_name, ip_address, api_token) -> dict:
+def put_dns_update(zone_id, dns_record_id, dns_record_name, ip_address, api_token) -> dict | None:
     url = f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{dns_record_id}"
     headers = {
         "Authorization": f"Bearer {api_token}",

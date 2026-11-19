@@ -19,6 +19,13 @@ def describe_save_report_to_disk():
         assert re.match(expected_timestamp_re, content) is not None
         assert content.endswith(f"{fake_content}\n")
 
+    def it_writes_utf8_regardless_of_the_platform_default_encoding(tmp_path):
+        report_file = Path(tmp_path / "test-report.log")
+
+        patient.save_report_to_disk("**🗂️ Logs** • item", report_file)
+
+        assert "**🗂️ Logs** • item" in report_file.read_bytes().decode("utf-8")
+
     def it_makes_parent_directories_if_missing(tmp_path):
         report_file = Path(tmp_path / "grandparent/parent/test-report.log")
         fake_content = "hello-world"
@@ -59,7 +66,7 @@ def describe_discord_webhook():
         assert "Triggered Discord notifier webhook\n" == out
         assert success
 
-    def it_fails_when_sending_notification_given_bad_response(monkeypatch, capsys):
+    def it_fails_when_sending_notification_given_server_error(monkeypatch, capsys):
         fake_webhook = "https://fake.lan/webhook?12345678"
         fake_message = "hello world!"
         fakes.fake_webhook_call(monkeypatch, status_code=500)
