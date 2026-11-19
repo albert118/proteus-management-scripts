@@ -158,7 +158,7 @@ class ReportBuilder():
 
         if not all_lines:
             self.net_stats = ["Network stats unavailable (vnstat failed or not installed)"]
-        elif:
+        else:
             self.net_stats = all_lines
 
         return self
