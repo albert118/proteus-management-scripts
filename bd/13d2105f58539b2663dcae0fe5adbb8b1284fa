@@ -1,0 +1,21 @@
+packages/ddns-refresher/tests/test_ddns_refresher.py
+  s_e4ac4105cb5650::t_9a46a1654e353c 1-329
+packages/ddns-refresher/tests/conftest.py
+  s_e4ac4105cb5650::t_c5863b160e3f48 1-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "bd13d2105f58539b2663dcae0fe5adbb8b1284fa",
+  "prompts": {},
+  "sessions": {
+    "s_e4ac4105cb5650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c933df68-c09d-49ed-856e-ffe218562d31",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
