@@ -1,0 +1,25 @@
+packages/file-helper/src/file_helper/validation/junk_matcher.py
+  s_6c18f9b9b76615::t_42f3a938d28c4d 3,32,39-44,75-76,78-87
+packages/file-helper/src/file_helper/validation/matchers.py
+  s_6c18f9b9b76615::t_5f6f94c3b519f8 22
+packages/file-helper/tests/test_archivers.py
+  s_6c18f9b9b76615::t_f6d0883fe747b0 126-138
+packages/file-helper/tests/test_matchers.py
+  s_6c18f9b9b76615::t_83c83223d1cf10 6,63-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "adcef53ec1a63c9070b7bc8aa803685a96c60a22",
+  "prompts": {},
+  "sessions": {
+    "s_6c18f9b9b76615": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a98186df-a001-4ab5-8c26-5c2447ef68e0",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
