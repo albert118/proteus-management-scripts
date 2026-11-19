@@ -70,7 +70,7 @@ def setup_argument_parser():
 
 
 def run(args) -> None:
-    api_key = os.getenv("IPINFO_API_KEY")
+    api_key = args.api_key or os.getenv("IPINFO_API_KEY")
     if not api_key:
         print("Error: IPINFO_API_KEY not set. Use --api-key or set it in .env.")
         sys.exit(1)
