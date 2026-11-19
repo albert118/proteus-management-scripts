@@ -1,0 +1,19 @@
+packages/ip-tools/uv.lock
+  s_c4bc9a5ad34479::t_cdfcc37b9f7437 315-316,323-324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "127a8fe20f7862f9d15e871bf8a179046bb239a4",
+  "prompts": {},
+  "sessions": {
+    "s_c4bc9a5ad34479": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bcdaa69e-dda7-4f5d-baf7-b5109c453338",
+        "model": "unknown"
+      },
+      "human_author": "albert118 <albertferguson118@gmail.com>"
+    }
+  }
+}
