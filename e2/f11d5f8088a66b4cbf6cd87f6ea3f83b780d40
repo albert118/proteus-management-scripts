@@ -1,0 +1,100 @@
+.github/workflows/ci-file-helper.yml
+  s_90c4796d9b1cba::t_27bada44e2d879 45-49
+packages/file-helper/pyproject.toml
+  s_90c4796d9b1cba::t_1f2f8eeb0257f2 15-41
+  s_09048b1e77016b::t_aea89026941dd0 6
+packages/file-helper/uv.lock
+  s_90c4796d9b1cba::t_a35549426a1155 2,4-22,23-26,27-28,29-146,150-153,155-250,251-254,255-343,344-361
+  s_09048b1e77016b::t_a29260aa1465ea 3,154
+packages/file-helper/src/file_helper/commands/commands.py
+  s_a5cedfe4bfdc6a::t_84652466b1d33f 6
+packages/file-helper/src/file_helper/main.py
+  s_a5cedfe4bfdc6a::t_593fa715e89f01 45,52
+packages/file-helper/src/file_helper/validation/base_matcher.py
+  s_a5cedfe4bfdc6a::t_7144f985d9b512 1,16,20
+packages/file-helper/src/file_helper/commands/convert_to_nfo.py
+  s_a5cedfe4bfdc6a::t_02eeda06156614 5,10,115,119-121,123-124
+  s_e4ac4105cb5650::t_6d03eb8822c5b1 116
+packages/file-helper/tests/test_cli_dispatch.py
+  s_4a22345ebc15cc::t_1f60f85a2de99e 1-94
+packages/file-helper/tests/test_imports.py
+  s_4a22345ebc15cc::t_7342bb14b320ef 1-20
+packages/file-helper/tests/test_archivers.py
+  s_e4ac4105cb5650::t_44a3cdadd9c472 1-51,65-125
+  s_e4d5ba0818547a::t_399bf6c2f0adbe 52-64
+packages/file-helper/tests/test_matchers.py
+  s_4a22345ebc15cc::t_a4a1fe8606a80d 1-37,44-61
+  s_e4d5ba0818547a::t_c6b2370ac3d5bf 38-43
+packages/file-helper/tests/test_mover.py
+  s_e4ac4105cb5650::t_8370ad123361df 1-20
+packages/file-helper/tests/test_convert_to_nfo.py
+  s_e4ac4105cb5650::t_9b5dc4f6bea6af 1-104
+packages/file-helper/.python-version
+  s_09048b1e77016b::t_5c3903a28c71f3 1
+packages/file-helper/src/file_helper/validation/junk_matcher.py
+  s_e4d5ba0818547a::t_4ec7909e0ec75e 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "e2f11d5f8088a66b4cbf6cd87f6ea3f83b780d40",
+  "prompts": {},
+  "sessions": {
+    "s_09048b1e77016b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6774c6d4-28fc-4741-8650-678c6cc4c9ad",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_4a22345ebc15cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a53bf59ebf8e11aa0",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_6c18f9b9b76615": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a98186df-a001-4ab5-8c26-5c2447ef68e0",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_90c4796d9b1cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fe4f573-aee1-4460-b478-56c5c6fc62b3",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_e4ac4105cb5650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c933df68-c09d-49ed-856e-ffe218562d31",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": null
+    },
+    "s_e4d5ba0818547a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbf39fb6-59e9-4f61-b083-fadfa315ba57",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
