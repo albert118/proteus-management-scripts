@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.12" ]
+        python-version: [ "3.14" ]
 
     defaults:
       run:
@@ -43,7 +43,7 @@ jobs:
       - name: Build
         run: uv build --no-sources
 
-      # - name: Run tests (pytest)
-      #   env:
-      #     pytest_github_report: true
-      #   run: uv run pytest
+      - name: Run tests (pytest)
+        env:
+          pytest_github_report: true
+        run: uv run pytest
