@@ -2,6 +2,7 @@ import argparse
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+import ipaddress
 import os
 
 from dotenv import load_dotenv
@@ -20,7 +21,7 @@ session.mount("https://", adapter)
 session.mount("http://", adapter)
 
 
-def parse_args():
+def parse_args(argv=None):
     parser = argparse.ArgumentParser(
         description="Refresh a Cloudflare DNS A record when your public IP changes."
     )
@@ -45,7 +46,17 @@ def parse_args():
         action="store_true",
         help="List available DNS records for the zone and exit.",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def _parse_ip_address(raw):
+    candidate = raw.strip()
+    try:
+        ipaddress.ip_address(candidate)
+    except ValueError:
+        print(f'❌ Unexpected response while fetching current public IP address: {candidate[:64]!r}')
+        return None
+    return candidate
 
 
 def get_current_public_ip_address():
@@ -53,7 +64,7 @@ def get_current_public_ip_address():
     try:
         response = session.get(url, timeout=10)
         response.raise_for_status()
-        return response.text
+        return _parse_ip_address(response.text)
     except requests.exceptions.Timeout:
         print('❌ Timed out while fetching current public IP address')
         return None
@@ -170,8 +181,8 @@ def init_env_variables(args):
     }
 
 
-if __name__ == "__main__":
-    args = parse_args()
+def main(argv=None):
+    args = parse_args(argv)
     env = init_env_variables(args)
 
     if args.list_records:
@@ -224,3 +235,7 @@ if __name__ == "__main__":
         if result is not None and result.get('success'):
             save_ip_address(curr_ip, fn=env["LAST_IP_FN"])
             print(f'📃 DNS record updated. Persisted last known IP to file: {env["LAST_IP_FN"]}')
+
+
+if __name__ == "__main__":
+    main()
