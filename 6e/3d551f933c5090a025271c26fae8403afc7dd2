@@ -1,0 +1,25 @@
+.github/workflows/ci-ddns-refresher.yml
+  s_4a22345ebc15cc::t_10f568d3ac9730 24
+packages/ddns-refresher/.python-version
+  s_4a22345ebc15cc::t_f425ef4bd9c316 1
+packages/ddns-refresher/pyproject.toml
+  s_4a22345ebc15cc::t_828cc10cef1404 6
+packages/ddns-refresher/uv.lock
+  s_4a22345ebc15cc::t_da665e67fdf11b 3,29-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "6e3d551f933c5090a025271c26fae8403afc7dd2",
+  "prompts": {},
+  "sessions": {
+    "s_4a22345ebc15cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a53bf59ebf8e11aa0",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
