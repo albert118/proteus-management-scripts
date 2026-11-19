@@ -44,7 +44,7 @@ class SmartMover:
             mkdir(new_dir)
             _logger.debug(f"created directory '{new_dir}'")
         except FileExistsError:
-            _logger.warn(f"cannot create directory as it already exists '{folder_name}'")
+            _logger.warning(f"cannot create directory as it already exists '{folder_name}'")
             raise
         finally:
             return new_dir
@@ -55,10 +55,11 @@ class SmartMover:
             src_fn = join(grandparent, fn)
 
         try:
+            # TODO: overwrites same-named destinations
             shutil.move(src_fn, dst)
             _logger.debug(f"moved file '{src_fn}' to directory '{dst}'")
         except Exception as e:
-            _logger.warn(f"encountered exception: '{e}'")
+            _logger.warning(f"encountered exception: '{e}'")
 
     def get_potential_files(self, dir):
         potential_files = [f for f in listdir(dir) if isfile(join(dir, f))]
