@@ -1,5 +1,5 @@
 from file_helper.validation.base_matcher import BaseMatcher
-from file_helper.cleaning.cleaner import clean_file_name
+from file_helper.smart_mover.cleaner import clean_file_name
 from os.path import splitext
 
 
@@ -32,7 +32,7 @@ GARBAGE_MEDIA = [
     "www YTS MX.jpg"
     "Sample.mkv",
     "Cover.jpg",
-    "Screenshot.png"  # any variation,
+    "Screenshot.png",  # any variation,
     "folder.jpg"
 ]
 

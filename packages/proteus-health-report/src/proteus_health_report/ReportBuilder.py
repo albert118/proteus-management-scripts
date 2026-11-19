@@ -43,7 +43,7 @@ class ReportBuilder():
         if not self.config.sections.logs_warnings:
             return self
 
-        logs_size_warnings = self.check_directory_size(
+        self.logs_size_warnings = self.check_directory_size(
             self.config.file_reporting.logs_directories,
             self.config.file_reporting.file_size
         )
@@ -67,7 +67,7 @@ class ReportBuilder():
         if not self.config.sections.temp_warnings:
             return self
 
-        tmps_size_warnings = self.check_directory_size(
+        self.tmps_size_warnings = self.check_directory_size(
             [d for d in self.config.file_reporting.temp_directories],
             self.config.file_reporting.file_size
         )
@@ -155,10 +155,12 @@ class ReportBuilder():
                 lines = [line.rstrip()
                          for line in result.stdout.splitlines() if line.strip()]
                 all_lines.extend(lines)
+
         if not all_lines:
             self.net_stats = ["Network stats unavailable (vnstat failed or not installed)"]
+        else:
+            self.net_stats = all_lines
 
-        self.net_stats = all_lines
         return self
 
     def with_docker_containers(self) -> 'ReportBuilder':
@@ -208,7 +210,6 @@ class ReportBuilder():
         # execute the report builder steps...
         (self.with_logs_size_warnings()
          .with_caches_size_warnings()
-         .with_tmps_size_warnings()
          .with_tmps_size_warnings()
          .with_disk_warnings()
          .with_service_statuses()

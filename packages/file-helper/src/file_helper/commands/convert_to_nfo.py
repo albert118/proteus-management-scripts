@@ -5,7 +5,8 @@ import textwrap
 import os
 from logging import Logger
 from pathlib import Path
-import re
+
+# TODO: does not XML-escape or handle list-valued `genre`; filename never sanitised.
 
 
 class NfoMediaConverter():
@@ -47,10 +48,9 @@ class NfoMediaConverter():
 
     def get_json_data_from_target(self) -> tuple[Path, str]:
         try:
-            pattern = re.compile(r"*.info.json$")
             matches = [
                 f for f in self.cwd.iterdir()
-                if f.is_file() and pattern.match(f.name)
+                if f.is_file() and f.name.endswith(".info.json")
             ]
 
             if len(matches) == 0:

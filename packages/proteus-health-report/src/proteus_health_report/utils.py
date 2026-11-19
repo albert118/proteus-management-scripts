@@ -1,6 +1,8 @@
 from pathlib import Path
 import datetime
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 
 def save_report_to_disk(report_content, report_file: Path):
@@ -28,7 +30,15 @@ def discord_notification(webhook, message):
         "Content-Type": "application/json"
     }
 
-    response = requests.post(webhook, json=data, headers=headers)
+    session = requests.Session()
+    retries = Retry(
+        total=3,
+        backoff_factor=1,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["POST"]
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    response = session.post(webhook, json=data, headers=headers, timeout=10)
 
     try:
         response.raise_for_status()

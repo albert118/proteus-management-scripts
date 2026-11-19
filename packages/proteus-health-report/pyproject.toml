@@ -28,12 +28,6 @@ dev = [
     "pytest-describe>=3.2.0",
     "pytest-github-report>=0.0.1",
 ]
-test = [
-  "pytest>=8.0.0",
-  "pytest-describe>=2.2.0",
-  "coverage>=7.13",
-  "pyyaml>=6.0",
-]
 
 [build-system]
 requires = ["setuptools >= 77.0.3"]

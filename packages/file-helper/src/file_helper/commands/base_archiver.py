@@ -53,11 +53,11 @@ class BaseArchiver(ABC):
                 self.logger.info(f"{file_count} garbage files found")
 
                 for fn in potential_files:
-                    self.archive(Path.joinpath(self.cwd, fn))
+                    self.archive(fn)
 
                 self.logger.info(f"{file_count} files archived")
             else:
                 self.logger.info("no garbage files found, finishing early")
         except Exception as ex:
-            self.logger.error(f"a problem occured, {ex}")
+            self.logger.error(f"a problem occurred, {ex}")
             return
