@@ -1,0 +1,55 @@
+.github/workflows/ci-file-helper.yml
+  s_90c4796d9b1cba::t_27bada44e2d879 45-49
+packages/file-helper/pyproject.toml
+  s_90c4796d9b1cba::t_1f2f8eeb0257f2 15-41
+packages/file-helper/uv.lock
+  s_90c4796d9b1cba::t_a35549426a1155 2,4-310,315-610
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "ee2969a452e096c009ddc53736b0250f6631d148",
+  "prompts": {},
+  "sessions": {
+    "s_09048b1e77016b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6774c6d4-28fc-4741-8650-678c6cc4c9ad",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_4a22345ebc15cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a53bf59ebf8e11aa0",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_90c4796d9b1cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fe4f573-aee1-4460-b478-56c5c6fc62b3",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_e4ac4105cb5650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c933df68-c09d-49ed-856e-ffe218562d31",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
