@@ -2,7 +2,7 @@ import configparser
 from importlib import resources
 import json
 import os
-from dataclasses import fields, is_dataclass
+from dataclasses import MISSING, fields, is_dataclass
 from pathlib import Path
 import pprint
 from platformdirs import PlatformDirs
@@ -118,7 +118,7 @@ class HealthReportConfigParser(configparser.ConfigParser):
                 # Check if the key isn't explicitly defined in the file structures
                 if not self.has_option(section_name, option_name):
                     # If field has a default value or default factory, let dataclass build it natively
-                    if option_field.default is not option_field.default_factory or option_field.default_factory is not None:
+                    if option_field.default is not MISSING or option_field.default_factory is not MISSING:
                         continue
                     raise configparser.NoOptionError(option_name, section_name)
 
@@ -159,7 +159,9 @@ class HealthReportConfigParser(configparser.ConfigParser):
             except json.JSONDecodeError:
                 pass
 
-        return [item.strip() for item in value.split(',') if item.strip()]
+        # values are commonly quoted in the INI (eg. "/var/log/*"); strip them so shell globs still expand
+        value = self._strip_wrapping_quotes(value)
+        return [cleaned for item in value.split(',') if (cleaned := self._strip_wrapping_quotes(item.strip()))]
 
     def gettypedlist(
         self, section: str, option: str, cast_type: Callable[[Any], T], fallback: Optional[List[T]] = None
@@ -213,6 +215,13 @@ class HealthReportConfigParser(configparser.ConfigParser):
             raise configparser.ParsingError(
                 f"Value for '{option}' in section '{section}' cannot be cast to {cast_type}: {e}"
             )
+
+    @staticmethod
+    def _strip_wrapping_quotes(value: str) -> str:
+        """Removes one pair of matching wrapping quotes (' or "), unless the value holds more of that quote inside."""
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'") and value[0] not in value[1:-1]:
+            return value[1:-1].strip()
+        return value
 
     def _convert_to_boolean(self, value: str) -> bool:
         """Helper to match configparser's internal truth map evaluation safely."""
