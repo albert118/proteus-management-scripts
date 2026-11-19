@@ -1,0 +1,21 @@
+packages/file-helper/tests/test_mover.py
+  s_e4ac4105cb5650::t_8370ad123361df 1-20
+packages/file-helper/tests/test_convert_to_nfo.py
+  s_e4ac4105cb5650::t_9b5dc4f6bea6af 1-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "150df2308e0655f5d2d3a61862334a316431bf58",
+  "prompts": {},
+  "sessions": {
+    "s_e4ac4105cb5650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c933df68-c09d-49ed-856e-ffe218562d31",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
