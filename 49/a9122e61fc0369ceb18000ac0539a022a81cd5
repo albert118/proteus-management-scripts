@@ -1,0 +1,19 @@
+packages/proteus-health-report/tests/fakes.py
+  s_a5cedfe4bfdc6a::t_f2128c12c55507 19,22-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "49a9122e61fc0369ceb18000ac0539a022a81cd5",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
