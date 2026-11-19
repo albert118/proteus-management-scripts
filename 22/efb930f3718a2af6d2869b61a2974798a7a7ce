@@ -1,0 +1,19 @@
+packages/file-helper/pyproject.toml
+  s_b71c2a2a8a5566::t_81210cd7db05b8 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "22efb930f3718a2af6d2869b61a2974798a7a7ce",
+  "prompts": {},
+  "sessions": {
+    "s_b71c2a2a8a5566": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707e1193-bca9-4144-bd42-ef29d8d8c431",
+        "model": "unknown"
+      },
+      "human_author": "albert118 <albertferguson118@gmail.com>"
+    }
+  }
+}
