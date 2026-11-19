@@ -10,3 +10,6 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/albert118/proteus-management-scripts"
+
+[project.scripts]
+fh = "ddns_refresher.main:main"
