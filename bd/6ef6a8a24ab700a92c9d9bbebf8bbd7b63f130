@@ -1,0 +1,23 @@
+packages/vdiff/pyproject.toml
+  s_ba9bebb2564d65::t_324628b0bbeaac 14-16,31
+packages/vdiff/src/vdiff/vdiff.py
+  s_ba9bebb2564d65::t_10116d2219248b 19-20,569,573-576
+packages/vdiff/uv.lock
+  s_ba9bebb2564d65::t_fb5e8ad1c1b70f 531-542,584,597
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "bd6ef6a8a24ab700a92c9d9bbebf8bbd7b63f130",
+  "prompts": {},
+  "sessions": {
+    "s_ba9bebb2564d65": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6e83dd49-ed69-4c6c-94c8-e5281a4d1fe2",
+        "model": "unknown"
+      },
+      "human_author": "albert118 <albertferguson118@gmail.com>"
+    }
+  }
+}
