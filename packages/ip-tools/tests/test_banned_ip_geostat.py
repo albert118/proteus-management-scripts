@@ -59,7 +59,6 @@ def describe_helpers():
         assert captured["auth"] == "Bearer my-key"
 
     def it_preflight_raises_systemexit_on_url_error(monkeypatch):
-
         def fake_urlopen(_req):
             raise urllib.error.URLError("no-network")
 
@@ -122,7 +121,6 @@ def describe_helpers():
         assert e.value.code == 1
 
     def it_print_stats_outputs_expected_lines(capsys):
-
         counter = Counter({"US": 2, "CA": 1})
         patient.print_stats("country code", counter)
 
@@ -140,3 +138,118 @@ def describe_helpers():
         assert "  OrgA" in out
         assert "    1.1.1.1" in out
         assert "    3.3.3.3" in out
+
+
+def describe_run():
+    def _run(tmp_path, no_banned_script=False):
+        _, ip_file, country_file, org_file, city_file, org_ips_file = fakes.create_dummy_args(
+            tmp_path)
+        patient.run(
+            api_key="tok",
+            ip_file=ip_file,
+            country_file=country_file,
+            org_file=org_file,
+            city_file=city_file,
+            org_ips_file=org_ips_file,
+            no_banned_script=no_banned_script,
+        )
+        return ip_file, country_file, org_file, city_file, org_ips_file
+
+    def it_merges_banned_ips_and_writes_output_files(monkeypatch, tmp_path):
+        fakes.fake_api_interaction(patient, monkeypatch)
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+        monkeypatch.setattr(patient, "fetch_banned_ips", lambda: ["1.2.3.4"])
+
+        ip_file, country_file, org_file, city_file, org_ips_file = _run(
+            tmp_path)
+
+        assert ip_file.read_text(encoding="utf-8") == "1.2.3.4\n"
+        assert country_file.read_text(encoding="utf-8") == "US\n"
+        assert org_file.read_text(encoding="utf-8") == "OrgX\n"
+        assert city_file.read_text(encoding="utf-8") == "NYC\n"
+        assert org_ips_file.read_text(encoding="utf-8") == "OrgX\n  1.2.3.4\n"
+
+    def it_counts_each_ip_in_the_printed_statistics(monkeypatch, tmp_path, capsys):
+        infos = {
+            "1.1.1.1": {"country": "US", "org": "OrgA", "city": "NYC"},
+            "2.2.2.2": {"country": "US", "org": "OrgB", "city": "LA"},
+            "3.3.3.3": {"country": "CA", "org": "OrgA", "city": "NYC"},
+        }
+        monkeypatch.setattr(patient, "get_ip_info", lambda ip, _key: infos[ip])
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+        _, ip_file, *_ = fakes.create_dummy_args(tmp_path)
+        ip_file.write_text("1.1.1.1\n2.2.2.2\n3.3.3.3\n", encoding="utf-8")
+
+        _, country_file, _, _, org_ips_file = _run(
+            tmp_path, no_banned_script=True)
+
+        out = capsys.readouterr().out
+        assert "     2  US" in out
+        assert "     1  CA" in out
+        assert "     2  OrgA" in out
+        assert "     2  NYC" in out
+        assert country_file.read_text(encoding="utf-8") == "US\nUS\nCA\n"
+        assert org_ips_file.read_text(encoding="utf-8") == (
+            "OrgA\n  1.1.1.1\n  3.3.3.3\nOrgB\n  2.2.2.2\n")
+
+    def it_skips_the_banned_script_when_no_banned_script_is_set(monkeypatch, tmp_path):
+        fakes.fake_api_interaction(patient, monkeypatch)
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+
+        def fail():
+            raise AssertionError("fetch_banned_ips must not be called")
+
+        monkeypatch.setattr(patient, "fetch_banned_ips", fail)
+        _, ip_file, *_ = fakes.create_dummy_args(tmp_path)
+        ip_file.write_text("9.9.9.9\n", encoding="utf-8")
+
+        _, _, _, _, org_ips_file = _run(tmp_path, no_banned_script=True)
+
+        assert org_ips_file.read_text(encoding="utf-8") == "OrgX\n  9.9.9.9\n"
+
+    def it_uses_unknown_for_missing_fields(monkeypatch, tmp_path):
+        monkeypatch.setattr(patient, "get_ip_info", lambda _ip, _key: {})
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+        monkeypatch.setattr(patient, "fetch_banned_ips", lambda: ["1.2.3.4"])
+
+        _, country_file, org_file, city_file, _ = _run(tmp_path)
+
+        assert country_file.read_text(encoding="utf-8") == "unknown\n"
+        assert org_file.read_text(encoding="utf-8") == "unknown\n"
+        assert city_file.read_text(encoding="utf-8") == "unknown\n"
+
+    def it_skips_ips_whose_lookup_fails_and_continues(monkeypatch, tmp_path, capsys):
+        def flaky_info(ip, _key):
+            if ip == "1.1.1.1":
+                raise urllib.error.URLError("boom")
+            return {"country": "US", "org": "OrgX", "city": "NYC"}
+
+        monkeypatch.setattr(patient, "get_ip_info", flaky_info)
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+        monkeypatch.setattr(
+            patient, "fetch_banned_ips", lambda: ["1.1.1.1", "2.2.2.2"])
+
+        _, country_file, _, _, org_ips_file = _run(tmp_path)
+
+        assert "failed to get info for 1.1.1.1" in capsys.readouterr().out
+        assert country_file.read_text(encoding="utf-8") == "US\n"
+        assert org_ips_file.read_text(encoding="utf-8") == "OrgX\n  2.2.2.2\n"
+
+    def it_writes_blank_outputs_when_there_are_no_ips(monkeypatch, tmp_path):
+        fakes.fake_api_interaction(patient, monkeypatch)
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+        _, ip_file, *_ = fakes.create_dummy_args(tmp_path)
+        ip_file.write_text("", encoding="utf-8")
+
+        _, country_file, _, _, org_ips_file = _run(
+            tmp_path, no_banned_script=True)
+
+        assert country_file.read_text(encoding="utf-8") == "\n"
+        assert org_ips_file.read_text(encoding="utf-8") == "\n"
+
+    def it_exits_when_no_banned_script_and_ip_file_missing(monkeypatch, tmp_path):
+        fakes.fake_api_interaction(patient, monkeypatch)
+
+        with pytest.raises(SystemExit) as e:
+            _run(tmp_path, no_banned_script=True)
+        assert e.value.code == 1
