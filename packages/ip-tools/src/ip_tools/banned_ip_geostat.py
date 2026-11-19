@@ -115,6 +115,10 @@ def run(api_key: str, ip_file: Path, country_file: Path, org_file: Path, city_fi
         new_ips = fetch_banned_ips()
         ips = merge_ips(new_ips, ip_file)
 
+    if not ips:
+        print("No IP addresses to process.")
+        sys.exit(0)
+
     preflight(api_key)
 
     country_counter: Counter[str] = Counter()

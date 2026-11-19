@@ -235,17 +235,28 @@ def describe_run():
         assert country_file.read_text(encoding="utf-8") == "US\n"
         assert org_ips_file.read_text(encoding="utf-8") == "OrgX\n  2.2.2.2\n"
 
-    def it_writes_blank_outputs_when_there_are_no_ips(monkeypatch, tmp_path):
-        fakes.fake_api_interaction(patient, monkeypatch)
-        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+    def it_exits_cleanly_without_calling_the_api_when_the_ip_file_is_empty(monkeypatch, tmp_path, capsys):
+        def fail(_api_key):
+            raise AssertionError("preflight must not be called")
+
+        monkeypatch.setattr(patient, "preflight", fail)
         _, ip_file, *_ = fakes.create_dummy_args(tmp_path)
         ip_file.write_text("", encoding="utf-8")
 
-        _, country_file, _, _, org_ips_file = _run(
-            tmp_path, no_banned_script=True)
+        with pytest.raises(SystemExit) as e:
+            _run(tmp_path, no_banned_script=True)
 
-        assert country_file.read_text(encoding="utf-8") == "\n"
-        assert org_ips_file.read_text(encoding="utf-8") == "\n"
+        assert e.value.code == 0
+        assert "No IP addresses to process." in capsys.readouterr().out
+
+    def it_exits_cleanly_when_the_banned_script_returns_no_ips(monkeypatch, tmp_path):
+        monkeypatch.setattr(patient, "fetch_banned_ips", lambda: [])
+        monkeypatch.setattr(patient, "preflight", lambda _api_key: None)
+
+        with pytest.raises(SystemExit) as e:
+            _run(tmp_path)
+
+        assert e.value.code == 0
 
     def it_exits_when_no_banned_script_and_ip_file_missing(monkeypatch, tmp_path):
         fakes.fake_api_interaction(patient, monkeypatch)
