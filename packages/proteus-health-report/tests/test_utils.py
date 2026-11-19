@@ -59,7 +59,7 @@ def describe_discord_webhook():
         assert "Triggered Discord notifier webhook\n" == out
         assert success
 
-    def it_fails_when_sending_notification_given_bad_response(monkeypatch, capsys):
+    def it_fails_when_sending_notification_given_server_error(monkeypatch, capsys):
         fake_webhook = "https://fake.lan/webhook?12345678"
         fake_message = "hello world!"
         fakes.fake_webhook_call(monkeypatch, status_code=500)
