@@ -1,0 +1,23 @@
+packages/file-helper/.python-version
+  s_09048b1e77016b::t_5c3903a28c71f3 1
+packages/file-helper/pyproject.toml
+  s_09048b1e77016b::t_aea89026941dd0 6
+packages/file-helper/uv.lock
+  s_09048b1e77016b::t_a29260aa1465ea 3,154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "758b0930b36ec2497cd515c395ef1248e6145059",
+  "prompts": {},
+  "sessions": {
+    "s_09048b1e77016b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6774c6d4-28fc-4741-8650-678c6cc4c9ad",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
