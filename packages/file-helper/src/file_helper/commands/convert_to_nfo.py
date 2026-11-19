@@ -6,6 +6,8 @@ import os
 from logging import Logger
 from pathlib import Path
 
+# TODO: does not XML-escape or handle list-valued `genre`; filename never sanitised.
+
 
 class NfoMediaConverter():
     """Converts *.info.json files from media-roller to standard nfo files"""
