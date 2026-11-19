@@ -13,3 +13,29 @@ Homepage = "https://github.com/albert118/proteus-management-scripts"
 
 [project.scripts]
 fh = "file_helper.main:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-describe>=3.2.0",
+  "coverage>=7.13",
+  "pytest-github-report>=0.0.1",
+]
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra -q"
+describe_prefixes = ["describe_"]
+python_functions = ["test_*", "it_*"]

@@ -42,3 +42,8 @@ jobs:
 
       - name: Build
         run: uv build --no-sources
+
+      - name: Run tests (pytest)
+        env:
+          pytest_github_report: true
+        run: uv run pytest
