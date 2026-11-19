@@ -1,0 +1,14 @@
+packages/ip-tools/src/ip_tools/main.py
+  h_2a13e69373df5d 73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "43978415de21a5409f9c0e599a1e43cd9c81ad26",
+  "prompts": {},
+  "humans": {
+    "h_2a13e69373df5d": {
+      "author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
