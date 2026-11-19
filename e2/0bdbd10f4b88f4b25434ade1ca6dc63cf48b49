@@ -1,0 +1,23 @@
+.github/workflows/ci-file-helper.yml
+  s_90c4796d9b1cba::t_27bada44e2d879 45-49
+packages/file-helper/pyproject.toml
+  s_90c4796d9b1cba::t_1f2f8eeb0257f2 15-41
+packages/file-helper/uv.lock
+  s_90c4796d9b1cba::t_a35549426a1155 2,4-310,315-610
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "e20bdbd10f4b88f4b25434ade1ca6dc63cf48b49",
+  "prompts": {},
+  "sessions": {
+    "s_90c4796d9b1cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fe4f573-aee1-4460-b478-56c5c6fc62b3",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
