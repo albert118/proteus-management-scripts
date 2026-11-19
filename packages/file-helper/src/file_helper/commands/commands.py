@@ -3,7 +3,7 @@ from enum import Enum
 from pathlib import Path
 
 
-class Command(Enum):
+class Command(str, Enum):
     """The commands parsable by this utility. Each invokes a distinct submodule."""
     archive_junk = "archive_junk"
     archive_media_libray_junk = "archive_media_libray_junk"

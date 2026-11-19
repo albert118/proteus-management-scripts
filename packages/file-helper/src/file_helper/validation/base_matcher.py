@@ -1,3 +1,4 @@
+from os import PathLike
 from os.path import exists
 
 
@@ -12,11 +13,11 @@ class BaseMatcher:
         self._is_valid = True
 
     def is_typed(self):
-        self._is_valid &= type(self._data) == str
+        self._is_valid &= isinstance(self._data, (str, PathLike))
         return self
 
     def is_non_empty(self):
-        self._is_valid &= len(self._data) > 0
+        self._is_valid &= len(str(self._data)) > 0
         return self
 
     def file_exists(self):

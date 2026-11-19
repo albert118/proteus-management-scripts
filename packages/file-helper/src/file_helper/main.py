@@ -41,20 +41,15 @@ def setup_argument_parser():
         help='The directory to archive content too. This is intended for review and manual deletion.'
     )
     collect_garbage_parser.add_argument(
-        '--archive-dir',
-        type=Path,
-        help='The directory to archive content too. This is intended for review and manual deletion.'
-    )
-    collect_garbage_parser.add_argument(
         '--whitelist',
-        type=Path,
+        type=str,
         nargs="*",
         default=[],
         help='Whitelist of file types to include'
     )
     collect_garbage_parser.add_argument(
         '--blacklist',
-        type=Path,
+        type=str,
         nargs="*",
         default=[],
         help='Blacklist of file types to include'
