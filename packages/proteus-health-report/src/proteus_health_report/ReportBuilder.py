@@ -120,8 +120,13 @@ class ReportBuilder():
         if not self.config.sections.dns_resolution:
             return self
 
+        domains = self.config.networking_reporting.dns_test_domain
+        if not domains:
+            self.dns_status = ["DNS Resolution: FAILED (no test domain configured)"]
+            return self
+
         # For now, only resolve the first option to keep it simple.
-        command = f"dig +short {self.config.networking_reporting.dns_test_domain[0]} | head -1"
+        command = f"dig +short {domains[0]} | head -1"
         result = subprocess.run(
             command,
             capture_output=True,
