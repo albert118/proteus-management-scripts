@@ -1,0 +1,21 @@
+packages/proteus-health-report/pyproject.toml
+  s_09048b1e77016b::t_576961c9cee084 9
+packages/proteus-health-report/uv.lock
+  s_09048b1e77016b::t_988d019389d373 2-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "75444664b61fc8d1c1c5662859275a24e035fa56",
+  "prompts": {},
+  "sessions": {
+    "s_09048b1e77016b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6774c6d4-28fc-4741-8650-678c6cc4c9ad",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
