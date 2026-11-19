@@ -1,0 +1,19 @@
+packages/file-helper/src/file_helper/validation/base_matcher.py
+  s_a5cedfe4bfdc6a::t_7144f985d9b512 1,16,20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "dece56ffb26d3909705380930f174d8edf90bb24",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
