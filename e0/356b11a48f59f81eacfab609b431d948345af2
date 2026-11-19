@@ -1,0 +1,19 @@
+packages/proteus-health-report/src/proteus_health_report/utils.py
+  s_a5cedfe4bfdc6a::t_85fbdf34aac5f8 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "e0356b11a48f59f81eacfab609b431d948345af2",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
