@@ -1,0 +1,5 @@
+/home/albertferguson/Scripts/ffmpeg-git-20240629-amd64-static/ffmpeg \
+    -y -threads 16 -i "/mnt/movies/Thor (2011)/original - Thor (2011) - [HDTV-1080p][AAC 2.0][x265].mp4"\
+    -threads 16 -i "/home/albertferguson/file-flows-node/data/results/10b00c8c-094d-4eb1-9b92-8c91693bd97f/final - Thor (2011) 1080p hevc.mkv" \
+    -filter_complex "[0:v]setpts=PTS-STARTPTS,split=2[ref_vmaf][ref_ssim]; [1:v]setpts=PTS-STARTPTS,split=2[dist_vmaf][dist_ssim]; [dist_vmaf][ref_vmaf]libvmaf=model=version=vmaf_v0.6.1:n_threads=30:n_subsample=2:feature=name=psnr; [dist_ssim][ref_ssim]ssim" \
+    -progress pipe:2 -f null -

@@ -1,0 +1,12 @@
+SSIM results: {'ssim_y_mean': 0.9042319390234164, 'ssim_cb_mean': 0.9835633031638293, 'ssim_cr_mean': 0.9791183479187364, 'ssim_global_mean': 0.9299349010659139}
+========================================
+        QUALITY COMPARISON RESULTS      
+========================================
+VMAF Score: 40.91 / 100
+PSNR Score: 33.23 dB
+SSIM Score: 0.9299
+========================================
+Verdict: Fail! One or more quality gates rejected the encode:
+  - VMAF 40.91 failed target of 93.0
+  - PSNR 33.23dB failed target of 35.0dB
+  - SSIM 0.9299 failed target of 0.9500
