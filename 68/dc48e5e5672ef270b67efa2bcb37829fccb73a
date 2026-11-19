@@ -1,0 +1,28 @@
+packages/file-helper/src/file_helper/commands/convert_to_nfo.py
+  s_a5cedfe4bfdc6a::t_02eeda06156614 5,10,115,119-121,123-124
+  s_e4ac4105cb5650::t_6d03eb8822c5b1 116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "68dc48e5e5672ef270b67efa2bcb37829fccb73a",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    },
+    "s_e4ac4105cb5650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c933df68-c09d-49ed-856e-ffe218562d31",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
