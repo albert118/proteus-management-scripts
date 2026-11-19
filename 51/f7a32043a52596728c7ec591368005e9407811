@@ -1,0 +1,21 @@
+packages/file-helper/tests/test_cli_dispatch.py
+  s_4a22345ebc15cc::t_1f60f85a2de99e 1-94
+packages/file-helper/tests/test_imports.py
+  s_4a22345ebc15cc::t_7342bb14b320ef 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "51f7a32043a52596728c7ec591368005e9407811",
+  "prompts": {},
+  "sessions": {
+    "s_4a22345ebc15cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a53bf59ebf8e11aa0",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
