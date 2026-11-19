@@ -1,0 +1,19 @@
+packages/file-helper/src/file_helper/commands/convert_to_nfo.py
+  s_a5cedfe4bfdc6a::t_02eeda06156614 5,10,115-117,120-122,124-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "1427883011276aa9cee5ccab77da701ba7e6d948",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
