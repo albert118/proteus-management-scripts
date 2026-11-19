@@ -1,0 +1,21 @@
+packages/ip-tools/src/ip_tools/banned_ip_geostat.py
+  s_90c4796d9b1cba::t_d68d17a15161d9 118-121
+packages/ip-tools/tests/test_banned_ip_geostat.py
+  s_90c4796d9b1cba::t_21814ad7dbd8c7 238-242,246-257,259
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "799404fc80eb0e9f2e2ded94515d20457165c59f",
+  "prompts": {},
+  "sessions": {
+    "s_90c4796d9b1cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fe4f573-aee1-4460-b478-56c5c6fc62b3",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
