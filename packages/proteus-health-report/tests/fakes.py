@@ -16,7 +16,8 @@ class FakeSuccessResponse:
 
 
 def fake_webhook_call(monkeypatch, status_code):
-    def fake_post(url, json, headers):
+    def fake_post(self, url, *args, **kwargs):
         return FakeSuccessResponse(status_code)
 
-    monkeypatch.setattr(requests, "post", fake_post)
+    # production posts via a requests.Session (retry adapter), not requests.post
+    monkeypatch.setattr(requests.Session, "post", fake_post)
