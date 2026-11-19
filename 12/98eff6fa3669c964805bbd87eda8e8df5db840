@@ -1,0 +1,21 @@
+packages/ip-tools/pyproject.toml
+  s_09048b1e77016b::t_731aeb615f80ed 9
+packages/ip-tools/uv.lock
+  s_09048b1e77016b::t_d21b4fd02dd2e7 2-3,305-337
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "1298eff6fa3669c964805bbd87eda8e8df5db840",
+  "prompts": {},
+  "sessions": {
+    "s_09048b1e77016b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6774c6d4-28fc-4741-8650-678c6cc4c9ad",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
