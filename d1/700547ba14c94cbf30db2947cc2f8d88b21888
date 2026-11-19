@@ -1,0 +1,21 @@
+packages/file-helper/src/file_helper/commands/commands.py
+  s_a5cedfe4bfdc6a::t_84652466b1d33f 6
+packages/file-helper/src/file_helper/main.py
+  s_a5cedfe4bfdc6a::t_593fa715e89f01 45,52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "d1700547ba14c94cbf30db2947cc2f8d88b21888",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
