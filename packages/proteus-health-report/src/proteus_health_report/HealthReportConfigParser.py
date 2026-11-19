@@ -80,7 +80,7 @@ class HealthReportConfigParser(configparser.ConfigParser):
 
         return self
 
-    def load_hierarchy(self, hierarchy: List[Path]) -> List[str]:
+    def load_hierarchy(self, hierarchy) -> List[str]:
         """Loads a list of paths sequentially. Later entries override earlier ones."""
         paths_to_read = [str(path) for path in hierarchy]
         self.loaded_files = self.read(paths_to_read)
