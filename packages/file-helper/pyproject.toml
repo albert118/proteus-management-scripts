@@ -3,7 +3,7 @@ name = "file-helper"
 version = "1.0.0"
 description = "Some common Python file helper utilities I frequently use"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 dependencies = []
