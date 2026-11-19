@@ -1,0 +1,14 @@
+packages/ip-tools/tests/test_banned_ip_geostat.py
+  h_2a13e69373df5d 1,3,5,7-8,11-25,27-32,34,36-132,134-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "46fa03f63f8d5cfec98694f00c6ea3ed6323101c",
+  "prompts": {},
+  "humans": {
+    "h_2a13e69373df5d": {
+      "author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
