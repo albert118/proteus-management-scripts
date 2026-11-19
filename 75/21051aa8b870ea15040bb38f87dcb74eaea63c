@@ -1,0 +1,23 @@
+packages/file-helper/src/file_helper/validation/junk_matcher.py
+  s_e4d5ba0818547a::t_4ec7909e0ec75e 61
+packages/file-helper/tests/test_archivers.py
+  s_e4d5ba0818547a::t_399bf6c2f0adbe 52-64
+packages/file-helper/tests/test_matchers.py
+  s_e4d5ba0818547a::t_c6b2370ac3d5bf 38-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "7521051aa8b870ea15040bb38f87dcb74eaea63c",
+  "prompts": {},
+  "sessions": {
+    "s_e4d5ba0818547a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbf39fb6-59e9-4f61-b083-fadfa315ba57",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
