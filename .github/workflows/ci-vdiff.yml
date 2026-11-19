@@ -1,0 +1,49 @@
+name: CI - vdiff
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    branches: 
+      - main
+    paths:
+      - '.github/workflows/ci-vdiff.yml'
+      - 'packages/vdiff/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.12" ]
+
+    defaults:
+      run:
+        working-directory: ./packages/vdiff
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install uv and setup Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked --dev
+
+      - name: Build
+        run: uv build --no-sources
+
+      # - name: Run tests (pytest)
+      #   env:
+      #     pytest_github_report: true
+      #   run: uv run pytest
