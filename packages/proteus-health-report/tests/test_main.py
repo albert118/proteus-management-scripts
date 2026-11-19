@@ -5,6 +5,7 @@ import re
 from types import SimpleNamespace
 import pytest
 from pathlib import Path
+from tests import fakes
 
 
 def describe_arg_parsing():
@@ -18,8 +19,12 @@ def describe_arg_parsing():
 
 
 def describe_main_entrypoint():
-    def it_should_run_and_persist_report_with_default_config():
+    def it_should_run_and_persist_report_with_default_config(monkeypatch, tmp_path):
+        fake = fakes.fake_subprocess(monkeypatch)
+        fake.respond("du -sh", "1.2G /var/log/big")
+        fake.respond("df -hlP", "Filesystem Size Used Avail Use% Mounted on\n/dev/vda1 20G 18G 2G 90% /")
         config = load_config_from_file()
+        config.report.report_file_location = tmp_path / "report.log"
         args_dict = {
             'dry_run': True,
             'test_webhook': False,
@@ -40,17 +45,22 @@ def describe_main_entrypoint():
         assert "**My Host Health Report**" in report_content
         assert "**🛠️ Service Statuses:**" in report_content
 
+        # enabled in default config, populated from the faked du/df output
+        assert "**🗂️ Logs Size Warnings:**" in report_content
+        assert "**🧹 Caches Size Warnings:**" in report_content
+        assert "**♨️ Temp Size Warnings:**" in report_content
+        assert "  • 1.2G /var/log/big" in report_content
+        assert "**💽 Disk Usage Warning:**" in report_content
+        assert "  • /dev/vda1 20G 18G 2G 90% /" in report_content
+
         # disabled in default config
-        assert "**🗂️ Logs Size Warnings:**" not in report_content
-        assert "**🧹 Caches Size Warnings:**" not in report_content
-        assert "**♨️ Temp Size Warnings:**" not in report_content
-        assert "**💽 Disk Usage Warning:**" not in report_content
         assert "**🌐 DNS Resolution:**" not in report_content
         assert "**🐳 Active Docker Containers:**" not in report_content
         assert "**⚡️ Power Saving Stats:**" not in report_content
         assert "**📶 Network Stats (vnstat):**" not in report_content
 
     def it_should_merge_user_provided_config(monkeypatch, tmp_path):
+        fakes.fake_subprocess(monkeypatch)
         report_path = Path(tmp_path / "report__it_should_merge_user_provided_config.txt")
         test_report_title = 'it_should_merge_user_provided_config'
         write_test_config_file(test_report_title, report_path)
