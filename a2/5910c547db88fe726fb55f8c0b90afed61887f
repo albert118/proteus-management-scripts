@@ -1,0 +1,19 @@
+packages/proteus-health-report/src/proteus_health_report/HealthReportConfigParser.py
+  s_a5cedfe4bfdc6a::t_8bf21e7ffbf90b 5,121,162-164,219-225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "a25910c547db88fe726fb55f8c0b90afed61887f",
+  "prompts": {},
+  "sessions": {
+    "s_a5cedfe4bfdc6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40c83b4b-8517-4330-824e-61899a92e6a7",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
