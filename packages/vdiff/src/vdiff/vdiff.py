@@ -16,8 +16,8 @@ import math
 import re
 import socket
 import time
-import utils
-import media_utils
+from . import utils
+from . import media_utils
 
 # Safely import or instruct on installing tqdm
 # FIX: Make tqdm completely optional so it runs inside bare Docker containers
@@ -566,7 +566,11 @@ def main(args) -> None:
     parse_results(args.output_log, args.min_vmaf, args.min_psnr, args.min_ssim)
 
 
-if __name__ == "__main__":
+def cli() -> None:
     args = parse_arguments()
     utils.check_dependencies(args.ffmpeg_path)
     main(args)
+
+
+if __name__ == "__main__":
+    cli()
