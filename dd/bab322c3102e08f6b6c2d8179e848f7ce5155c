@@ -1,0 +1,21 @@
+packages/file-helper/src/file_helper/smart_mover/mover.py
+  s_e4d5ba0818547a::t_41098ae7f3f3bf 49-50
+packages/file-helper/tests/test_mover.py
+  s_e4d5ba0818547a::t_de104540873da9 3-4,14,17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "ddbab322c3102e08f6b6c2d8179e848f7ce5155c",
+  "prompts": {},
+  "sessions": {
+    "s_e4d5ba0818547a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbf39fb6-59e9-4f61-b083-fadfa315ba57",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
