@@ -2,11 +2,12 @@ from pathlib import Path
 import json
 from datetime import datetime
 import textwrap
+from xml.sax.saxutils import escape
 import os
 from logging import Logger
 from pathlib import Path
 
-# TODO: does not XML-escape or handle list-valued `genre`; filename never sanitised.
+# TODO: output filename is never sanitised.
 
 
 class NfoMediaConverter():
@@ -111,14 +112,16 @@ def parse_info_json(info_json):
 
 
 def create_movie_nfo(title, plot, genre, credit, premiered, source):
+    genres = [genre] if isinstance(genre, str) else (genre or [])
+    genre_xml = "\n        ".join(f"<genre>{escape(str(g))}</genre>" for g in genres)
     nfo_data = f"""
     <movie>
-        <title>{title}</title>
-        <plot>{plot}</plot>
-        <url>{source}</url>
+        <title>{escape(str(title))}</title>
+        <plot>{escape(str(plot))}</plot>
+        <url>{escape(str(source))}</url>
         <tag>mediaroller</tag>
-        <genre>{genre}</genre>
-        <credits>{credit}</credits>
+        {genre_xml}
+        <credits>{escape(str(credit))}</credits>
         <premiered>{datetime.strftime(premiered, "%Y-%m-%d")}</premiered>
     </movie>"""
 
