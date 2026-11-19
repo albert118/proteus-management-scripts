@@ -1,0 +1,19 @@
+packages/ddns-refresher/src/ddns_refresher/main.py
+  s_90c4796d9b1cba::t_78f03deaee82d2 5,24,49-59,67,184-185,238-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "f4930c7bdd6684a07ee1744eea425ff7f28294ea",
+  "prompts": {},
+  "sessions": {
+    "s_90c4796d9b1cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9fe4f573-aee1-4460-b478-56c5c6fc62b3",
+        "model": "unknown"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
