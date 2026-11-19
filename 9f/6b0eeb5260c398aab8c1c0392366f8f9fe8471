@@ -1,0 +1,20 @@
+packages/proteus-health-report/tests/test_HealthReportConfigParser.py
+  s_e4ac4105cb5650::t_10e5b5d3f687a1 1-294
+  s_e4ac4105cb5650::t_9daf97167c8346 295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "9f6b0eeb5260c398aab8c1c0392366f8f9fe8471",
+  "prompts": {},
+  "sessions": {
+    "s_e4ac4105cb5650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c933df68-c09d-49ed-856e-ffe218562d31",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "albertAtPropertyMe <albertferguson@propertyme.com>"
+    }
+  }
+}
